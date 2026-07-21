@@ -26,6 +26,7 @@ export interface RunAgentAttemptParams {
   workerId: string;
   planner: OutreachPlanner;
   goal?: "follow_up" | "fulfill_promise" | "clarify";
+  onRetry?: () => void;
 }
 
 function planHash(plan: OutreachPlan): string {
@@ -48,7 +49,9 @@ export async function runAgentAttempt(params: RunAgentAttemptParams): Promise<Ag
   const plan = await planner.plan(evidence);
   const logicalActionKey = logicalActionKeyFor(tenantId, contactId, plan);
 
-  return withSerializableRetry(pool, async (client) => {
+  return withSerializableRetry(
+    pool,
+    async (client) => {
     // 1. Re-read authoritative facts fresh, and lock the task row.
     const { rows: taskRows } = await client.query(
       `SELECT state FROM agent_tasks WHERE tenant_id = $1 AND task_id = $2 FOR UPDATE`,
@@ -205,6 +208,8 @@ export async function runAgentAttempt(params: RunAgentAttemptParams): Promise<Ag
       [workerId, tenantId, taskId]
     );
 
-    return { kind: "authorized", outboxId, fencingToken, policyDecisionId, plan };
-  });
+      return { kind: "authorized", outboxId, fencingToken, policyDecisionId, plan };
+    },
+    { ...(params.onRetry ? { onRetry: params.onRetry } : {}) }
+  );
 }

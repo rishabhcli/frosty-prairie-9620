@@ -1,0 +1,10 @@
+{
+  "contactCount": 5,
+  "topK": 2,
+  "precisionAtK": 1,
+  "recallAtK": 0.5,
+  "citedFactValidityRate": 1,
+  "unsupportedClaimRate": 0,
+  "methodologyNote": "precisionAtK/recallAtK measure retrieval quality against the currentlyValid authoritative signal, not semantic topicality -- embedText() is a deterministic fixture, not a trained embedding model. See eval/memory/run.ts header comment and docs/CURRENT_SOURCES.md.",
+  "generatedAt": "2026-07-21T18:40:08.952Z"
+}

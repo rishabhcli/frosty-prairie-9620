@@ -5,7 +5,7 @@ const RETRY_SQLSTATE = "40001";
 export async function withSerializableRetry<T>(
   pool: Pool,
   fn: (client: PoolClient) => Promise<T>,
-  opts: { maxRetries?: number } = {}
+  opts: { maxRetries?: number; onRetry?: () => void } = {}
 ): Promise<T> {
   const maxRetries = opts.maxRetries ?? 8;
   const client = await pool.connect();
@@ -22,6 +22,7 @@ export async function withSerializableRetry<T>(
         const code = (err as { code?: string }).code;
         if (code === RETRY_SQLSTATE && attempt < maxRetries) {
           await client.query("ROLLBACK TO SAVEPOINT cockroach_restart");
+          opts.onRetry?.();
           const backoffMs = Math.min(2 ** attempt * 10, 500);
           await new Promise((r) => setTimeout(r, backoffMs));
           continue;

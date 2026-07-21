@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 
 const TABLES = [
+  "sandbox_deliveries",
   "transactional_outbox",
   "contact_leases",
   "agent_tasks",

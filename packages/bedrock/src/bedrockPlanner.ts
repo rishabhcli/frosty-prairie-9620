@@ -4,8 +4,9 @@ import type { EvidencePacket, OutreachPlanner } from "./planner.js";
 
 const TOOL_NAME = "submit_outreach_plan";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- AWS SDK's DocumentType union
-// rejects a structurally-equivalent Record<string, unknown>; this is a plain JSON Schema literal.
+// AWS SDK's DocumentType union rejects a structurally-equivalent Record<string, unknown>;
+// this is a plain JSON Schema literal.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const OUTREACH_PLAN_JSON_SCHEMA: any = {
   type: "object",
   properties: {

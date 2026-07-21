@@ -1,0 +1,36 @@
+{
+  "scenarios": [
+    {
+      "name": "duplicate_sqs_message_idempotent_replay",
+      "recovered": true,
+      "detail": "first=authorized retry=idempotent_replay outboxRows=1"
+    },
+    {
+      "name": "consent_revoked_before_plan",
+      "recovered": true,
+      "detail": "outcome=blocked reasons=consent_revoked"
+    },
+    {
+      "name": "consent_revoked_after_authorization_before_delivery",
+      "recovered": true,
+      "detail": "authorized=authorized finalState=canceled_policy sandboxDeliveries=0"
+    },
+    {
+      "name": "expired_stale_lease_takeover",
+      "recovered": true,
+      "detail": "fencingToken=2 leaseAvailable=true"
+    },
+    {
+      "name": "crashed_outbox_worker_resumes_exactly_once",
+      "recovered": true,
+      "detail": "resumed=delivered second=empty sandboxDeliveries=1"
+    },
+    {
+      "name": "post_send_crash_idempotent_retry",
+      "recovered": true,
+      "detail": "first.alreadySent=false retry.alreadySent=true rows=1"
+    }
+  ],
+  "allRecovered": true,
+  "generatedAt": "2026-07-21T18:40:05.285Z"
+}

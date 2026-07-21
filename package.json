@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "license": "Apache-2.0",
+  "type": "module",
   "engines": {
     "node": ">=22"
   },
@@ -11,8 +12,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",
-    "test:integration": "pnpm -r run test:integration",
-    "test:e2e": "playwright test",
+    "test:integration": "pnpm -r --workspace-concurrency=1 run test:integration",
+    "test:e2e": "pnpm --filter @contactsafe/console build && playwright test",
     "eval:race": "tsx eval/race/run.ts",
     "eval:faults": "tsx eval/faults/run.ts",
     "eval:memory": "tsx eval/memory/run.ts",
@@ -28,6 +29,12 @@
     "tsx": "^4.19.2",
     "vitest": "^2.1.8",
     "eslint": "^9.15.0",
-    "@playwright/test": "^1.49.0"
+    "@eslint/js": "^9.15.0",
+    "typescript-eslint": "^8.15.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "globals": "^15.12.0",
+    "@playwright/test": "^1.49.0",
+    "@axe-core/playwright": "^4.10.1"
   }
 }

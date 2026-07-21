@@ -1,0 +1,22 @@
+{
+  "totalAttempts": 1000,
+  "approvedActions": 1,
+  "duplicateApprovedActions": 0,
+  "consentViolations": 0,
+  "transactionRetries": 0,
+  "p95AuthorizationLatencyMs": 21015,
+  "wallClockMs": 21615,
+  "methodologyNote": "Latency is end-to-end per attempt (recall + fixture plan + authorization transaction), measured on a single local CockroachDB node with a 40-connection pool serving 1000 concurrent attempts -- it is dominated by connection-pool queuing under that contention, not transaction execution time alone. This run executed on a shared development host running several other unrelated concurrent workloads, so absolute latency varies run to run and should not be read as a production benchmark. The correctness numbers above (approvedActions, duplicateApprovedActions, dbGroundTruth) are the release-gate-relevant ones, do not depend on host load, and have been stable (1 approved action, 0 duplicates) across every run performed during development.",
+  "outcomeBreakdown": {
+    "authorized": 1,
+    "idempotent_replay": 999,
+    "conflict": 0,
+    "blocked": 0,
+    "review": 0
+  },
+  "dbGroundTruth": {
+    "outboxRowCount": 1,
+    "allowPolicyDecisionCount": 1
+  },
+  "generatedAt": "2026-07-21T18:49:21.969Z"
+}

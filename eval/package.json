@@ -1,0 +1,26 @@
+{
+  "name": "@contactsafe/eval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@contactsafe/contracts": "workspace:*",
+    "@contactsafe/db": "workspace:*",
+    "@contactsafe/policy": "workspace:*",
+    "@contactsafe/memory": "workspace:*",
+    "@contactsafe/bedrock": "workspace:*",
+    "@contactsafe/agent-worker": "workspace:*",
+    "@contactsafe/outbox-worker": "workspace:*",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8",
+    "tsx": "^4.19.2"
+  }
+}

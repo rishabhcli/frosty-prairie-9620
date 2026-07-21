@@ -9,7 +9,9 @@
   /* Text */
   --text-primary: #e9e6dc;
   --text-secondary: #9aa1af;
-  --text-tertiary: #666f80;
+  /* #666f80 measured ~2.9:1 against these panel backgrounds -- fails WCAG AA (4.5:1) for
+     normal-size text. Lightened until axe-core's color-contrast check passes. */
+  --text-tertiary: #9099ab;
 
   /* Paper accent -- used only for quoted/cited evidence, like a highlighted excerpt. */
   --paper: #f0ede4;
