@@ -1,0 +1,7 @@
+packages:
+  - "packages/*"
+  - "services/*"
+  - "apps/*"
+  - "eval"
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,33 @@
+{
+  "name": "contactsafe",
+  "private": true,
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "test:integration": "pnpm -r run test:integration",
+    "test:e2e": "playwright test",
+    "eval:race": "tsx eval/race/run.ts",
+    "eval:faults": "tsx eval/faults/run.ts",
+    "eval:memory": "tsx eval/memory/run.ts",
+    "build": "pnpm -r run build",
+    "db:up": "docker compose -f infra/docker-compose.yml up -d",
+    "db:down": "docker compose -f infra/docker-compose.yml down",
+    "db:migrate": "tsx packages/db/src/migrate.run.ts",
+    "db:seed": "tsx packages/db/src/seed.run.ts",
+    "db:reset": "tsx packages/db/src/reset.run.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.8",
+    "eslint": "^9.15.0",
+    "@playwright/test": "^1.49.0"
+  }
+}

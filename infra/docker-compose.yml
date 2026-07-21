@@ -1,0 +1,21 @@
+name: frosty-prairie-9620
+
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v26.1
+    container_name: frosty-prairie-9620-cockroachdb
+    command: start-single-node --insecure
+    ports:
+      - "127.0.0.1:14910:26257"
+      - "127.0.0.1:14911:8080"
+    volumes:
+      - frosty-prairie-9620-cockroach-data:/cockroach/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8080/health?ready=1 || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  frosty-prairie-9620-cockroach-data:
+    name: frosty-prairie-9620-cockroach-data

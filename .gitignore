@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+*.log
+.DS_Store
+demo/audio/mix/*.wav
+demo/audio/narration/*.wav
+demo/final/*.mp4
+!demo/final/.gitkeep
+.run/
+playwright-report/
+test-results/
+coverage/
+*.tsbuildinfo

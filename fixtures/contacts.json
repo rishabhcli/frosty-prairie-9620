@@ -1,0 +1,9 @@
+{
+  "contacts": [
+    {
+      "contactId": "11111111-1111-1111-1111-111111111111",
+      "displayName": "Jordan (synthetic demo contact)",
+      "emailAddress": "jordan.demo@sandbox.contactsafe.invalid"
+    }
+  ]
+}
