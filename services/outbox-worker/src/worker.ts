@@ -5,6 +5,8 @@ import { claimAndDeliverOne } from "./deliver.js";
 
 const POLL_INTERVAL_MS = 500;
 const PORT = Number(process.env.PORT_OUTBOX_WORKER ?? 14903);
+// Demo/recording only -- see claimAndDeliverOne's postClaimDelayMs doc comment. 0 in production.
+const DEMO_DELAY_MS = Number(process.env.OUTBOX_WORKER_DEMO_DELAY_MS ?? 0);
 
 async function main() {
   const pool = createPool();
@@ -34,7 +36,7 @@ async function main() {
   });
 
   while (!stopped) {
-    const outcome = await claimAndDeliverOne(pool, DEMO_TENANT_ID);
+    const outcome = await claimAndDeliverOne(pool, DEMO_TENANT_ID, DEMO_DELAY_MS);
     lastOutcome = outcome.kind;
     if (outcome.kind !== "empty") {
       processedCount += 1;

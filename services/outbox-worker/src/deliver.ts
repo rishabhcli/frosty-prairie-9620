@@ -104,9 +104,23 @@ export async function markDelivered(pool: Pool, tenantId: string, outboxId: stri
   );
 }
 
-export async function claimAndDeliverOne(pool: Pool, tenantId: string): Promise<DeliveryOutcome> {
+/**
+ * `postClaimDelayMs` widens the real (and normally sub-millisecond) window between
+ * claiming a row and sending it -- for demo/recording purposes only, so a real SIGKILL
+ * can be timed reliably on camera. It defaults to 0 and has no effect on production
+ * behavior; see demo/scripts/kill_and_restart_worker.sh for how it's used.
+ */
+export async function claimAndDeliverOne(
+  pool: Pool,
+  tenantId: string,
+  postClaimDelayMs = 0
+): Promise<DeliveryOutcome> {
   const claim = await claimNextOutboxRow(pool, tenantId);
   if (claim.kind !== "claimed") return claim;
+
+  if (postClaimDelayMs > 0) {
+    await new Promise((resolve) => setTimeout(resolve, postClaimDelayMs));
+  }
 
   const sendResult = await sandboxSend(pool, tenantId, claim.outboxId, claim.providerIdempotencyKey, claim.payload);
   await markDelivered(pool, tenantId, claim.outboxId);
