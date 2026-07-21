@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import type { Pool } from "pg";
@@ -8,6 +11,16 @@ import { createOutreachPlanner } from "@contactsafe/bedrock";
 import { createAgentTask, runAgentAttempt } from "@contactsafe/agent-worker";
 import { claimAndDeliverOne } from "@contactsafe/outbox-worker";
 import { getContactState } from "./state.js";
+
+const REPORTS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "eval", "reports");
+
+async function readReport(name: string): Promise<unknown | null> {
+  try {
+    return JSON.parse(await readFile(join(REPORTS_DIR, name), "utf8"));
+  } catch {
+    return null;
+  }
+}
 
 export async function buildServer(pool: Pool): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
@@ -82,6 +95,15 @@ export async function buildServer(pool: Pool): Promise<FastifyInstance> {
   app.post("/outbox/process-one", async (_req, reply) => {
     const outcome = await claimAndDeliverOne(pool, DEMO_TENANT_ID);
     return reply.send(outcome);
+  });
+
+  app.get("/evaluation/latest", async (_req, reply) => {
+    const [race, faults, memory] = await Promise.all([
+      readReport("race.json"),
+      readReport("faults.json"),
+      readReport("memory.json"),
+    ]);
+    return reply.send({ race, faults, memory });
   });
 
   app.post("/demo/reset", async (_req, reply) => {

@@ -1,0 +1,20 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@contactsafe/api", "start"],
+      "port": 14901,
+      "env": {
+        "DATABASE_URL": "postgresql://root@127.0.0.1:14910/contactsafe?sslmode=disable"
+      }
+    },
+    {
+      "name": "console",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@contactsafe/console", "dev"],
+      "port": 14900
+    }
+  ]
+}

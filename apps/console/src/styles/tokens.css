@@ -1,0 +1,53 @@
+:root {
+  /* Base surfaces -- warm graphite, not pure black; a control-room feel, not a SaaS dark mode. */
+  --ink: #14171c;
+  --panel: #1b1f26;
+  --panel-raised: #232833;
+  --wire: #343a46;
+  --wire-soft: #262c37;
+
+  /* Text */
+  --text-primary: #e9e6dc;
+  --text-secondary: #9aa1af;
+  --text-tertiary: #666f80;
+
+  /* Paper accent -- used only for quoted/cited evidence, like a highlighted excerpt. */
+  --paper: #f0ede4;
+  --paper-ink: #262115;
+
+  /* Signal colors -- each one means exactly one thing, everywhere in the product. */
+  --allow: #3fb68b;
+  --allow-dim: #1f3d33;
+  --block: #e2574c;
+  --block-dim: #3d2321;
+  --fencing: #e8b54d;
+  --fencing-dim: #3d3320;
+  --review: #7d8ff2;
+  --review-dim: #262a45;
+
+  /* Type */
+  --font-display: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-body: "IBM Plex Sans", -apple-system, sans-serif;
+  --font-data: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}
+
+@media (prefers-color-scheme: light) {
+  /* The console is designed dark-first (it's an operator console, run in a demo/judging
+     context); we still respect a light preference by lifting surfaces rather than
+     inverting the whole signal-color system, which must stay identical either way. */
+  :root {
+    --ink: #1b1e24;
+    --panel: #23272f;
+  }
+}
