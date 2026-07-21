@@ -95,15 +95,13 @@ export async function runAgentAttempt(params: RunAgentAttemptParams): Promise<Ag
       return { kind: "idempotent_replay", outboxId: existingOutbox.outboxId };
     }
 
-    // 3. Lease acquisition -- the coordination point two racing workers contend on.
-    const { fencingToken, leaseAvailable } = await tryAcquireLease(client, tenantId, contactId, CHANNEL, workerId);
-    if (!leaseAvailable) {
-      return { kind: "conflict", message: `contact lease for ${contactId} is held by another worker` };
-    }
-
-    // 4. Recompute policy against fresh transactional facts.
+    // 3a. Preliminary policy check assuming the lease *would* be available. This decides
+    // whether it's even worth contending for the lease: a revoked-consent or otherwise
+    // policy-blocked attempt should report *why* it's blocked, not an incidental lease
+    // conflict with whichever worker happens to reach the lease row first.
     const availableFactIds = await computeAvailableFactIds(client, tenantId, contactId, plan.citedFactIds);
-    const policyInput: PolicyEvaluationInput = {
+    const taskAlreadyCompleted = taskState === "authorized" || taskState === "completed";
+    const basePolicyInput: PolicyEvaluationInput = {
       now: new Date(),
       consent,
       campaignSuppressed: false,
@@ -113,10 +111,54 @@ export async function runAgentAttempt(params: RunAgentAttemptParams): Promise<Ag
       activePromise,
       plan,
       availableFactIds,
-      taskAlreadyCompleted: taskState === "authorized" || taskState === "completed",
-      leaseAvailable,
+      taskAlreadyCompleted,
+      leaseAvailable: true,
     };
-    const policyResult = evaluatePolicy(policyInput);
+    const preliminaryResult = evaluatePolicy(basePolicyInput);
+
+    await client.query(
+      `INSERT INTO contact_attempts (tenant_id, contact_id, channel, campaign_id, worker_id)
+       VALUES ($1, $2, $3, 'default', $4)`,
+      [tenantId, contactId, CHANNEL, workerId]
+    );
+
+    if (preliminaryResult.outcome !== "allow") {
+      const policyDecisionId = randomUUID();
+      await client.query(
+        `INSERT INTO policy_decisions
+           (tenant_id, policy_decision_id, contact_id, rule_version, outcome, reason_codes, evidence_fact_ids, plan_hash)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          tenantId,
+          policyDecisionId,
+          contactId,
+          preliminaryResult.ruleVersion,
+          preliminaryResult.outcome,
+          preliminaryResult.reasonCodes,
+          plan.citedFactIds,
+          planHash(plan),
+        ]
+      );
+      await client.query(
+        `UPDATE agent_tasks SET state = $1, version = version + 1, updated_at = now(), worker_id = $2
+         WHERE tenant_id = $3 AND task_id = $4`,
+        [preliminaryResult.outcome === "block" ? "blocked" : "claimed", workerId, tenantId, taskId]
+      );
+      return preliminaryResult.outcome === "block"
+        ? { kind: "blocked", reasonCodes: preliminaryResult.reasonCodes, policyDecisionId }
+        : { kind: "review", reasonCodes: preliminaryResult.reasonCodes, policyDecisionId };
+    }
+
+    // 3b. Everything else checks out -- now contend for the lease, the coordination
+    // point two racing workers actually fight over.
+    const { fencingToken, leaseAvailable } = await tryAcquireLease(client, tenantId, contactId, CHANNEL, workerId);
+    if (!leaseAvailable) {
+      return { kind: "conflict", message: `contact lease for ${contactId} is held by another worker` };
+    }
+
+    // 4. Final policy decision (identical to the preliminary one since leaseAvailable was
+    // already assumed true and just got confirmed) is what gets persisted as authoritative.
+    const policyResult = preliminaryResult;
 
     // 5. Insert the immutable policy decision.
     const policyDecisionId = randomUUID();
@@ -135,23 +177,6 @@ export async function runAgentAttempt(params: RunAgentAttemptParams): Promise<Ag
         planHash(plan),
       ]
     );
-
-    await client.query(
-      `INSERT INTO contact_attempts (tenant_id, contact_id, channel, campaign_id, worker_id)
-       VALUES ($1, $2, $3, 'default', $4)`,
-      [tenantId, contactId, CHANNEL, workerId]
-    );
-
-    if (policyResult.outcome !== "allow") {
-      await client.query(
-        `UPDATE agent_tasks SET state = $1, version = version + 1, updated_at = now(), worker_id = $2
-         WHERE tenant_id = $3 AND task_id = $4`,
-        [policyResult.outcome === "block" ? "blocked" : "claimed", workerId, tenantId, taskId]
-      );
-      return policyResult.outcome === "block"
-        ? { kind: "blocked", reasonCodes: policyResult.reasonCodes, policyDecisionId }
-        : { kind: "review", reasonCodes: policyResult.reasonCodes, policyDecisionId };
-    }
 
     // 6. Insert the outbox row -- the one durable side effect this attempt is allowed to cause.
     const outboxId = randomUUID();
