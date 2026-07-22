@@ -1,0 +1,200 @@
+# ContactSafe demo composition — authoritative scene definitions.
+# Consumed by demo/animation (Remotion) for timing/captions and by
+# demo/scripts/render.sh for the final render command.
+#
+# Total duration: 173s (2:53) — 7s under the hackathon's 3:00 hard limit.
+# See docs/CURRENT_SOURCES.md for the live event's video-length rule.
+
+title: "ContactSafe — Agentic Memory with Transactional Authorization"
+repository_slug: frosty-prairie-9620
+fps: 30
+resolution: [1920, 1080]
+total_duration_seconds: 173
+
+scenes:
+  - id: scene-01-problem
+    start: 0.0
+    end: 15.0
+    product_state: "cold open — no product UI yet, title card + duplicate-agent illustration"
+    seed: null
+    capture_source: "remotion-animation"
+    narration_text: >
+      Two agents. One customer. Both remember the conversation.
+      Neither one knows what the other's about to do.
+    on_screen_text:
+      - "Two agents. One customer."
+      - "Chat history isn't memory safety."
+    animation_cue: "two abstract agent nodes both reaching toward one contact node, glow pulse desync"
+    cursor_or_camera_action: "static wide shot, no cursor"
+    music_cue: "cold open pulse, sparse mallet hits, no percussion yet"
+    expected_proof: "sets up the problem before any product is shown"
+    transition: "hard cut to console"
+    fallback_source: "static problem-illustration frame if animation render fails"
+
+  - id: scene-02-race
+    start: 15.0
+    end: 48.0
+    product_state: "console race view, demo reset + seeded (Jordan, one open promise, consent granted); two agent-worker processes started against the same task_id"
+    seed: "fixtures/contacts.json:jordan; pnpm db:reset && pnpm db:seed"
+    capture_source: "playwright-recording:console@127.0.0.1:14900"
+    narration_text: >
+      Here's Jordan. Jordan got a promise last week: "I'll email the revised
+      quote after Tuesday." Now two agents both pick up the follow-up task at
+      the same instant. Agent A and Agent B each query CockroachDB for the
+      same thing — Jordan's consent, the open promise, and anything similar
+      in vector memory. Both get the same answer back, with citations. Both
+      are about to act. That's the moment most systems get this wrong.
+    on_screen_text:
+      - "Same task. Same instant."
+      - "Recall: consent (granted) + promise (open, cited) + vector memory"
+    animation_cue: "callout boxes highlighting the two worker panels and the shared recall citations as they populate"
+    cursor_or_camera_action: "cursor hovers the two worker status panels, slow pan across recall citations"
+    music_cue: "light rhythm enters, tension build"
+    expected_proof: "both workers show identical recalled evidence with source citations before either commits"
+    transition: "soft crossfade into transaction result"
+    fallback_source: "labeled results/replay of a previously captured race run if live race is flaky under recording load"
+
+  - id: scene-03-transaction-result
+    start: 48.0
+    end: 78.0
+    product_state: "same race, now resolved — one worker holds the fenced lease and outbox row, the other shows a conflict result"
+    seed: "continuation of scene-02 run (same task_id)"
+    capture_source: "playwright-recording:console@127.0.0.1:14900"
+    narration_text: >
+      Watch the lease. Agent B gets there first — one serializable
+      transaction, one fenced lease, one outbox row, committed. Agent A
+      retries a beat later, sees a newer fencing token, and backs off
+      cleanly. No duplicate email. No coin flip. CockroachDB didn't just
+      store the memory — it decided, transactionally, who gets to act on it.
+    on_screen_text:
+      - "1 fenced lease · 1 outbox row · run_id + action_key shown"
+      - "Loser: safe conflict, not an error"
+    animation_cue: "fencing token counter increments live; loser panel animates into a calm 'conflict — no action taken' state, not a red error"
+    cursor_or_camera_action: "cursor points at the fencing token value and the unique logical_action_key in the audit panel"
+    music_cue: "resolves the tension build from scene 2, settles into steady rhythm"
+    expected_proof: "one outbox row exists; the run_id/action_key is visible and matches across both worker panels"
+    transition: "hard cut to consent panel"
+    fallback_source: "labeled results/replay if live race is flaky under recording load"
+
+  - id: scene-04-revocation
+    start: 78.0
+    end: 103.0
+    product_state: "the outbox row from scene 3 is still 'pending' (not yet delivered); operator revokes Jordan's email consent via console, then triggers the outbox worker's next delivery attempt on that same row"
+    seed: "same seeded contact and outbox row from scene 2-3; revoke via console consent panel, then click 'Process one outbox delivery'"
+    capture_source: "playwright-recording:console@127.0.0.1:14900"
+    narration_text: >
+      Now Jordan revokes email consent. The email from a moment ago is
+      still sitting in the queue, waiting to send. Doesn't matter that it
+      was already approved. Before delivery, the worker rechecks consent
+      one more time — and this time it's revoked. The send gets canceled,
+      not sent, before anything goes out.
+    on_screen_text:
+      - "Consent: revoked (effective now)"
+      - "Outbox: canceled_policy — consent no longer granted"
+    animation_cue: "revoked consent event pulses red-amber (not alarming red); the pending outbox row's state chip flips from amber 'pending' to red 'canceled', with a small lock icon showing the pre-delivery recheck firing"
+    cursor_or_camera_action: "click the revoke button, then the process-delivery button; cursor rests on the resulting outbox row state"
+    music_cue: "brief minor-key accent, then settles — serious, not dramatic"
+    expected_proof: "the transactional_outbox row's state is canceled_policy; sandbox_deliveries has zero rows for it -- nothing was sent"
+    transition: "soft crossfade into recovery scene"
+    fallback_source: "labeled results/replay if live revocation timing is flaky under recording load"
+
+  - id: scene-05-crash-recovery
+    start: 103.0
+    end: 128.0
+    product_state: "a fresh reset + race authorizes a new outbox row for a second contact (consent still granted); the outbox-worker process is killed (SIGKILL) after it claims that row but before it finishes delivering, then restarted"
+    seed: "fresh demo reset, race against a second seeded contact, then kill/restart the standalone outbox-worker process"
+    capture_source: "playwright-recording:console@127.0.0.1:14900 + terminal capture of worker kill/restart"
+    narration_text: >
+      One more test: kill the outbox worker mid-delivery. On restart, it
+      doesn't guess. It rechecks consent, rechecks the fencing token, and
+      finds the one pending row it already approved. It resumes that — and
+      only that. No second send. No lost task.
+    on_screen_text:
+      - "outbox-worker killed (SIGKILL)"
+      - "Recovery: 1 row resumed · 0 duplicates"
+    animation_cue: "terminal kill command overlays the console; outbox row transitions claimed -> delivered on restart with a small checkmark animation"
+    cursor_or_camera_action: "split view: terminal kill command left, console outbox state right"
+    music_cue: "steady, procedural — no tension spike"
+    expected_proof: "outbox row state transitions from claimed to delivered exactly once after restart; no second outbox row for the same logical_action_key"
+    transition: "hard cut to evaluation dashboard"
+    fallback_source: "labeled results/replay if live process kill is flaky under recording load"
+
+  - id: scene-06-evaluation
+    start: 128.0
+    end: 155.0
+    product_state: "evaluation dashboard showing the 1,000-race, fault-injection, and memory/policy evaluation results"
+    seed: "pnpm eval:race / eval:faults / eval:memory results loaded from eval/reports"
+    capture_source: "playwright-recording:console@127.0.0.1:14900"
+    narration_text: >
+      Under the hood: CockroachDB's distributed vector index for recall,
+      plus Managed MCP for judge-visible, read-only access to the same
+      memory. Bedrock plans and drafts from cited facts only — it never
+      authorizes anything. We ran one thousand concurrent, retried attempts
+      at this exact race. One approved action. Zero duplicates. Zero
+      consent violations.
+    on_screen_text:
+      - "Vector Index + Managed MCP (2 qualifying CockroachDB features) + AWS Bedrock"
+      - "1,000 races -> 1 approved action, 0 duplicates, 0 consent violations"
+    animation_cue: "10-second architecture animation: request -> recall (vector index) -> Bedrock plan -> policy -> serializable transaction -> outbox, each node lighting up in sequence; then metrics count up from 0 to measured values"
+    cursor_or_camera_action: "cursor scrolls the evaluation report, pauses on the architecture diagram and the metrics table"
+    music_cue: "confident, resolved rhythm, mid-energy"
+    expected_proof: "metrics on screen are read directly from eval/reports/*.json produced by an actual run, not invented"
+    transition: "soft crossfade into limitations"
+    fallback_source: "none — this must be a real measured report; if unavailable, scene is cut rather than faked"
+
+  - id: scene-07-limitations
+    start: 155.0
+    end: 168.0
+    product_state: "console footer / architecture doc callout showing sandbox-mode label"
+    seed: null
+    capture_source: "playwright-recording:console@127.0.0.1:14900"
+    narration_text: >
+      This demo sends through a sandbox provider, not a live inbox. And
+      ContactSafe enforces the policy you configure — it isn't a compliance
+      review on its own.
+    on_screen_text:
+      - "Sandbox delivery, not a live inbox"
+      - "Policy must be configured and reviewed by your team"
+    animation_cue: "gentle lower-third label fade: 'SANDBOX MODE'"
+    cursor_or_camera_action: "static, no cursor movement — let the text be read"
+    music_cue: "pulls back to near-silence under narration"
+    expected_proof: "explicit, visible acknowledgment of the sandbox/compliance boundary"
+    transition: "hard cut to closing frame"
+    fallback_source: "static frame with the same on-screen text if capture unavailable"
+
+  - id: scene-08-closing
+    start: 168.0
+    end: 173.0
+    product_state: "closing title card"
+    seed: null
+    capture_source: "remotion-animation"
+    narration_text: >
+      Shared memory made two agents safe to run together. That's
+      ContactSafe.
+    on_screen_text:
+      - "ContactSafe"
+      - "CockroachDB x AWS Agentic Memory Hackathon"
+    animation_cue: "the two agent nodes from scene 1 now pulse in sync instead of desync, resolving the opening visual metaphor"
+    cursor_or_camera_action: "static wide shot, no cursor"
+    music_cue: "resolves cleanly to silence, no abrupt cutoff"
+    expected_proof: "closing brand/outcome frame, no fabricated claims"
+    transition: "fade to black"
+    fallback_source: "static closing frame"
+
+captions:
+  formats: [srt, vtt]
+  source_of_truth: "final mixed narration transcript, force-aligned — see demo/scripts/align_captions.py"
+
+audio:
+  narration_model: "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit"
+  music_bpm_range: [72, 100]
+  target_lufs: -16.0
+  target_true_peak_dbtp: -1.0
+
+output:
+  path: "demo/final/frosty-prairie-9620-demo.mp4"
+  resolution: [1920, 1080]
+  fps: 30
+  video_codec: h264
+  pixel_format: yuv420p
+  audio_codec: aac

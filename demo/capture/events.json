@@ -1,0 +1,82 @@
+[
+  {
+    "tMs": 239,
+    "kind": "scene",
+    "label": "scene-02-race:start"
+  },
+  {
+    "tMs": 364,
+    "kind": "action",
+    "label": "click race two workers"
+  },
+  {
+    "tMs": 492,
+    "kind": "scene",
+    "label": "scene-03-transaction-result"
+  },
+  {
+    "tMs": 536,
+    "kind": "scene",
+    "label": "scene-04-revocation:start"
+  },
+  {
+    "tMs": 637,
+    "kind": "action",
+    "label": "click process one outbox delivery (expect cancellation)"
+  },
+  {
+    "tMs": 685,
+    "kind": "scene",
+    "label": "scene-04-revocation:canceled"
+  },
+  {
+    "tMs": 740,
+    "kind": "scene",
+    "label": "scene-05-crash-recovery:start"
+  },
+  {
+    "tMs": 948,
+    "kind": "action",
+    "label": "spawn real outbox-worker process (with demo post-claim delay)"
+  },
+  {
+    "tMs": 1150,
+    "kind": "worker-log",
+    "label": "[outbox-worker] pid=57234 health server on http://127.0.0.1:14903"
+  },
+  {
+    "tMs": 1163,
+    "kind": "scene",
+    "label": "scene-05-crash-recovery:claimed-before-kill"
+  },
+  {
+    "tMs": 1211,
+    "kind": "action",
+    "label": "SIGKILL outbox-worker pid=57234"
+  },
+  {
+    "tMs": 2213,
+    "kind": "action",
+    "label": "restart outbox-worker process"
+  },
+  {
+    "tMs": 2330,
+    "kind": "worker-log",
+    "label": "[outbox-worker] pid=57244 health server on http://127.0.0.1:14903"
+  },
+  {
+    "tMs": 6432,
+    "kind": "worker-log",
+    "label": "[outbox-worker] {\"kind\":\"delivered\",\"outboxId\":\"782d9a4a-8b62-4c45-98a6-878785a9a2a1\",\"alreadySent\":false}"
+  },
+  {
+    "tMs": 6585,
+    "kind": "scene",
+    "label": "scene-05-crash-recovery:resumed-delivered"
+  },
+  {
+    "tMs": 9422,
+    "kind": "scene",
+    "label": "scene-06-evaluation"
+  }
+]
