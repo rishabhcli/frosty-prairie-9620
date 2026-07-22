@@ -62,6 +62,17 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // The outbox-worker is an independent process: it can change state (deliver, cancel,
+  // resume after a crash) without any button click in this console. Poll so the ledger
+  // reflects that in near-real-time rather than only after an operator-triggered action.
+  useEffect(() => {
+    if (!contactId) return;
+    const interval = setInterval(() => {
+      refreshState(contactId).catch(() => undefined);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [contactId, refreshState]);
+
   const handleRace = useCallback(async () => {
     if (!contactId) return;
     setBusy("race");
