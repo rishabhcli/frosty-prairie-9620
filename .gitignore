@@ -3,12 +3,13 @@ dist
 .env
 *.log
 .DS_Store
-demo/audio/mix/*.wav
-demo/audio/narration/*.wav
 demo/final/*.mp4
 !demo/final/.gitkeep
+demo/.venv/
 .run/
 playwright-report/
 test-results/
 coverage/
 *.tsbuildinfo
+__pycache__/
+*.pyc

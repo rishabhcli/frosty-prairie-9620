@@ -1,0 +1,88 @@
+WEBVTT
+
+00:00:03.000 --> 00:00:05.800
+Two agents, one customer.
+
+00:00:05.800 --> 00:00:08.000
+Both remember the conversation.
+
+00:00:08.000 --> 00:00:10.200
+Neither one knows what the other's about to do.
+
+00:00:11.780 --> 00:00:17.380
+Here's Jordan. Jordan got a promise last week. I'll email the revised quote after Tuesday.
+
+00:00:17.380 --> 00:00:20.880
+Now two agents both pick up the follow-up task at the same instant.
+
+00:00:20.880 --> 00:00:24.680
+Agent A and Agent B each query cockroach DB for the same thing.
+
+00:00:24.680 --> 00:00:28.080
+Jordan's consent, the open promise, and anything similar in vector memory.
+
+00:00:28.080 --> 00:00:31.680
+Both get the same answer back with citations. Both are about to act.
+
+00:00:31.680 --> 00:00:33.680
+That's the moment most systems get this wrong.
+
+00:00:35.120 --> 00:00:40.560
+Watch the lease. Agent B gets there first, one serializable transaction,
+
+00:00:40.560 --> 00:00:46.880
+one fenced lease, one outbox row, committed. Agent A retries a beat later, sees a newer
+
+00:00:46.880 --> 00:00:53.200
+fencing token, and backs off cleanly. No duplicate email. No coin flip.
+
+00:00:54.160 --> 00:01:00.000
+Cockroach DB didn't just store the memory, it decided, transactionally, who gets to act on it.
+
+00:01:01.660 --> 00:01:07.900
+Now Jordan revokes email consent. The email from a moment ago is still sitting in the queue waiting to send.
+
+00:01:08.180 --> 00:01:16.420
+Doesn't matter that it was already approved. Before delivery, the worker rechecks consent one more time and this time it's revoked.
+
+00:01:16.600 --> 00:01:20.780
+The send gets cancelled, not sent, before anything goes out.
+
+00:01:22.440 --> 00:01:26.440
+One more test. Kill the outbox worker mid-delivery.
+
+00:01:26.440 --> 00:01:29.960
+On restart, it doesn't guess. It rechecks consent,
+
+00:01:29.960 --> 00:01:34.760
+rechecks the fencing token, and finds the one pending row it already approved.
+
+00:01:34.760 --> 00:01:39.240
+It resumes that and only that. No second send. No lost task.
+
+00:01:40.820 --> 00:01:49.300
+Under the hood, Cockroach DB's distributed vector index for recall plus managed MCP for judge visible read only access to the same memory.
+
+00:01:49.300 --> 00:01:53.700
+Bedrock plans and drafts from cited facts only. It never authorizes anything.
+
+00:01:53.700 --> 00:01:57.540
+We ran 1,000 concurrent retried attempts at this exact race.
+
+00:01:57.540 --> 00:02:01.300
+One approved action. Zero duplicates. Zero consent violations.
+
+00:02:02.880 --> 00:02:07.280
+This demo sends through a sandbox provider, not a live inbox.
+
+00:02:07.280 --> 00:02:10.480
+And ContactSafe enforces the policy you configure.
+
+00:02:10.480 --> 00:02:12.680
+It isn't a compliance review on its own.
+
+00:02:14.300 --> 00:02:18.220
+Shared memory made two agents safe to run together.
+
+00:02:18.220 --> 00:02:19.660
+That's contact safe.

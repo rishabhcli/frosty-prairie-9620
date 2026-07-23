@@ -24,11 +24,11 @@ Voice direction column notes the emotional register for that line — passed to 
 
 > Watch the lease. // Agent B gets there first — one serializable transaction, one fenced lease, one outbox row, committed. // Agent A retries a beat later, sees a newer fencing token, and backs off cleanly. // No duplicate email. // No coin flip. // CockroachDB didn't just store the memory — it decided, transactionally, who gets to act on it.
 
-## Scene 4 — Revoke consent (1:18–1:43, ~56 words)
+## Scene 4 — Revoke consent (1:18–1:43, ~52 words)
 
 **Direction:** serious, a step slower — this is the trust-boundary moment.
 
-> Now Jordan revokes email consent. // A retried task comes back in — same vector memory still says "follow up," because embeddings don't know about Tuesday's revocation. // Doesn't matter. // The authoritative consent event is newer, and it wins. // The send gets blocked, immediately, before anything goes out.
+> Now Jordan revokes email consent. // The email from a moment ago is still sitting in the queue, waiting to send. // Doesn't matter that it was already approved. // Before delivery, the worker rechecks consent one more time — and this time it's revoked. // The send gets canceled, not sent, before anything goes out.
 
 ## Scene 5 — Crash and recovery (1:43–2:08, ~55 words)
 
@@ -63,7 +63,7 @@ Voice direction column notes the emotional register for that line — passed to 
 | 1 | 0:00–0:15 | 15s | 21 | ~84 (deliberately slower — it's the hook) |
 | 2 | 0:15–0:48 | 33s | 78 | ~142 |
 | 3 | 0:48–1:18 | 30s | 68 | ~136 |
-| 4 | 1:18–1:43 | 25s | 56 | ~134 |
+| 4 | 1:18–1:43 | 25s | 52 | ~125 |
 | 5 | 1:43–2:08 | 25s | 55 | ~132 |
 | 6 | 2:08–2:35 | 27s | 62 | ~138 |
 | 7 | 2:35–2:48 | 13s | 28 | ~129 |

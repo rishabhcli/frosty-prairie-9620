@@ -1,0 +1,84 @@
+{
+  "modelId": "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit",
+  "mlxAudioVersion": "0.4.5",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "generatedAt": "2026-07-22T21:23:47Z",
+  "scenes": [
+    {
+      "sceneId": "scene-01-problem",
+      "text": "Two agents. One customer. Both remember the conversation. Neither one knows what the other's about to do.",
+      "wordCount": 17,
+      "durationSeconds": 7.28,
+      "sampleRate": 24000,
+      "wordsPerMinute": 140.1,
+      "path": "audio/narration/scene-01-problem.wav"
+    },
+    {
+      "sceneId": "scene-02-race",
+      "text": "Here's Jordan. Jordan got a promise last week: \"I'll email the revised quote after Tuesday.\" Now two agents both pick up the follow-up task at the same instant. Agent A and Agent B each query CockroachDB for the same thing -- Jordan's consent, the open promise, and anything similar in vector memory. Both get the same answer back, with citations. Both are about to act. That's the moment most systems get this wrong.",
+      "wordCount": 73,
+      "durationSeconds": 21.84,
+      "sampleRate": 24000,
+      "wordsPerMinute": 200.5,
+      "path": "audio/narration/scene-02-race.wav",
+      "speed": 0.55
+    },
+    {
+      "sceneId": "scene-03-transaction-result",
+      "text": "Watch the lease. Agent B gets there first -- one serializable transaction, one fenced lease, one outbox row, committed. Agent A retries a beat later, sees a newer fencing token, and backs off cleanly. No duplicate email. No coin flip. CockroachDB didn't just store the memory -- it decided, transactionally, who gets to act on it.",
+      "wordCount": 56,
+      "durationSeconds": 25.04,
+      "sampleRate": 24000,
+      "wordsPerMinute": 134.2,
+      "path": "audio/narration/scene-03-transaction-result.wav"
+    },
+    {
+      "sceneId": "scene-04-revocation",
+      "text": "Now Jordan revokes email consent. The email from a moment ago is still sitting in the queue, waiting to send. Doesn't matter that it was already approved. Before delivery, the worker rechecks consent one more time -- and this time it's revoked. The send gets canceled, not sent, before anything goes out.",
+      "wordCount": 52,
+      "durationSeconds": 19.28,
+      "sampleRate": 24000,
+      "wordsPerMinute": 161.8,
+      "path": "audio/narration/scene-04-revocation.wav",
+      "speed": 0.72
+    },
+    {
+      "sceneId": "scene-05-crash-recovery",
+      "text": "One more test: kill the outbox worker mid-delivery. On restart, it doesn't guess. It rechecks consent, rechecks the fencing token, and finds the one pending row it already approved. It resumes that -- and only that. No second send. No lost task.",
+      "wordCount": 42,
+      "durationSeconds": 16.88,
+      "sampleRate": 24000,
+      "wordsPerMinute": 149.3,
+      "path": "audio/narration/scene-05-crash-recovery.wav"
+    },
+    {
+      "sceneId": "scene-06-evaluation",
+      "text": "Under the hood: CockroachDB's distributed vector index for recall, plus Managed MCP for judge-visible, read-only access to the same memory. Bedrock plans and drafts from cited facts only -- it never authorizes anything. We ran one thousand concurrent, retried attempts at this exact race. One approved action. Zero duplicates. Zero consent violations.",
+      "wordCount": 52,
+      "durationSeconds": 20.56,
+      "sampleRate": 24000,
+      "wordsPerMinute": 151.8,
+      "path": "audio/narration/scene-06-evaluation.wav"
+    },
+    {
+      "sceneId": "scene-07-limitation",
+      "text": "This demo sends through a sandbox provider, not a live inbox. And ContactSafe enforces the policy you configure -- it isn't a compliance review on its own.",
+      "wordCount": 27,
+      "durationSeconds": 9.92,
+      "sampleRate": 24000,
+      "wordsPerMinute": 163.3,
+      "path": "audio/narration/scene-07-limitation.wav"
+    },
+    {
+      "sceneId": "scene-08-closing",
+      "text": "Shared memory made two agents safe to run together. That's ContactSafe.",
+      "wordCount": 11,
+      "durationSeconds": 5.36,
+      "sampleRate": 24000,
+      "wordsPerMinute": 123.1,
+      "path": "audio/narration/scene-08-closing.wav"
+    }
+  ],
+  "regeneratedAt": "2026-07-22T21:28:39Z"
+}
