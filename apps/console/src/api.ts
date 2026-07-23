@@ -68,7 +68,13 @@ export interface AttemptRow {
   worker_id: string;
 }
 
+export interface ContactSummary {
+  display_name: string;
+  email_address: string;
+}
+
 export interface ContactState {
+  contact: ContactSummary | null;
   consentEvents: ConsentEventRow[];
   promises: PromiseRow[];
   leases: LeaseRow[];

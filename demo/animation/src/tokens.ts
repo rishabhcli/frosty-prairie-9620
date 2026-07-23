@@ -12,11 +12,11 @@ export const colors = {
   paperInk: "#262115",
   allow: "#3fb68b",
   allowDim: "#1f3d33",
-  block: "#e2574c",
+  block: "#f2776c",
   blockDim: "#3d2321",
   fencing: "#e8b54d",
   fencingDim: "#3d3320",
-  review: "#7d8ff2",
+  review: "#96a4f6",
 };
 
 export const fonts = {

@@ -1,7 +1,11 @@
 import type { Pool } from "pg";
 
 export async function getContactState(pool: Pool, tenantId: string, contactId: string) {
-  const [consent, promises, leases, outbox, policyDecisions, memory, attempts] = await Promise.all([
+  const [contact, consent, promises, leases, outbox, policyDecisions, memory, attempts] = await Promise.all([
+    pool.query(
+      `SELECT display_name, email_address FROM contacts WHERE tenant_id = $1 AND contact_id = $2`,
+      [tenantId, contactId]
+    ),
     pool.query(
       `SELECT event_id, status, effective_at, recorded_at, source_type, source_ref, actor
        FROM consent_events WHERE tenant_id = $1 AND contact_id = $2 ORDER BY effective_at DESC`,
@@ -41,6 +45,7 @@ export async function getContactState(pool: Pool, tenantId: string, contactId: s
   ]);
 
   return {
+    contact: contact.rows[0] ?? null,
     consentEvents: consent.rows,
     promises: promises.rows,
     leases: leases.rows,

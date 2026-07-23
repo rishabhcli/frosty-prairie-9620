@@ -13,7 +13,7 @@ test.describe("ContactSafe judge journey", () => {
     await page.goto("/");
 
     // Deterministic reset happens on mount -- wait for the seeded contact id to render.
-    await expect(page.getByText(/^11111111-/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Jordan").first()).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText("connected")).toBeVisible();
 
     // Ledger shows the seeded promise before anything else happens.
@@ -43,19 +43,19 @@ test.describe("ContactSafe judge journey", () => {
 
   test("accessibility: no serious or critical axe violations on the judge journey view", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText(/^11111111-/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Jordan").first()).toBeVisible({ timeout: 15_000 });
 
     const results = await new AxeBuilder({ page }).analyze();
-    const seriousOrCritical = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+    const reportable = results.violations.filter((v) => v.impact !== "minor");
     expect(
-      seriousOrCritical,
-      seriousOrCritical.map((v) => `${v.id}: ${v.help}`).join("\n")
+      reportable,
+      reportable.map((v) => `${v.id} (${v.impact}): ${v.help}`).join("\n")
     ).toEqual([]);
   });
 
   test("keyboard operability: every operator control is reachable and labeled without a mouse", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText(/^11111111-/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Jordan").first()).toBeVisible({ timeout: 15_000 });
 
     const controls = ["Race two workers for this contact", "Revoke email consent", "Process one outbox delivery", "Reset demo state"];
     for (const name of controls) {

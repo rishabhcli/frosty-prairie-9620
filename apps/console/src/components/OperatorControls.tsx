@@ -23,9 +23,16 @@ function outcomeLabel(outcome: AgentAttemptOutcome): string {
   }
 }
 
+const OUTBOX_RESULT_COPY: Record<string, { label: string; signal: "allow" | "block" | "neutral" }> = {
+  delivered: { label: "delivered to sandbox provider", signal: "allow" },
+  canceled_policy: { label: "canceled -- consent no longer granted", signal: "block" },
+  empty: { label: "queue is empty -- nothing pending to deliver", signal: "neutral" },
+};
+
 interface OperatorControlsProps {
   consentStatus: "granted" | "revoked" | "unknown" | undefined;
   raceResult: { agentA: AgentAttemptOutcome; agentB: AgentAttemptOutcome } | null;
+  outboxResult: string | null;
   busy: string | null;
   onReset(): void;
   onRace(): void;
@@ -36,6 +43,7 @@ interface OperatorControlsProps {
 export function OperatorControls({
   consentStatus,
   raceResult,
+  outboxResult,
   busy,
   onReset,
   onRace,
@@ -50,13 +58,17 @@ export function OperatorControls({
           {busy === "race" ? "Racing two workers…" : "Race two workers for this contact"}
         </button>
         <button className="btn" onClick={onToggleConsent} disabled={busy !== null}>
-          {consentStatus === "revoked" ? "Grant email consent" : "Revoke email consent"}
+          {busy === "consent"
+            ? "Updating consent…"
+            : consentStatus === "revoked"
+              ? "Grant email consent"
+              : "Revoke email consent"}
         </button>
         <button className="btn" onClick={onProcessOutbox} disabled={busy !== null}>
           {busy === "outbox" ? "Processing…" : "Process one outbox delivery"}
         </button>
         <button className="btn btn--ghost" onClick={onReset} disabled={busy !== null}>
-          Reset demo state
+          {busy === "reset" ? "Resetting…" : "Reset demo state"}
         </button>
       </div>
 
@@ -69,6 +81,17 @@ export function OperatorControls({
           <div className="operator__result-row">
             <span className="operator__result-actor mono">agent-b</span>
             <Badge signal={outcomeSignal(raceResult.agentB)}>{outcomeLabel(raceResult.agentB)}</Badge>
+          </div>
+        </div>
+      )}
+
+      {outboxResult && (
+        <div className="operator__result" aria-live="polite">
+          <div className="operator__result-row">
+            <span className="operator__result-actor mono">outbox-worker</span>
+            <Badge signal={OUTBOX_RESULT_COPY[outboxResult]?.signal ?? "neutral"}>
+              {OUTBOX_RESULT_COPY[outboxResult]?.label ?? outboxResult}
+            </Badge>
           </div>
         </div>
       )}

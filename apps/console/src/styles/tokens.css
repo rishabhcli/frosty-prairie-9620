@@ -20,11 +20,12 @@
   /* Signal colors -- each one means exactly one thing, everywhere in the product. */
   --allow: #3fb68b;
   --allow-dim: #1f3d33;
-  --block: #e2574c;
+  /* #e2574c measured 3.9:1 on --block-dim -- fails WCAG AA. Lightened to pass. */
+  --block: #f2776c;
   --block-dim: #3d2321;
   --fencing: #e8b54d;
   --fencing-dim: #3d3320;
-  --review: #7d8ff2;
+  --review: #96a4f6;
   --review-dim: #262a45;
 
   /* Type */

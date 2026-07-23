@@ -7,6 +7,7 @@ import { Ledger } from "./components/Ledger.js";
 import { OperatorControls } from "./components/OperatorControls.js";
 import { EvaluationStrip } from "./components/EvaluationStrip.js";
 import type { EvaluationLatest } from "./components/EvaluationStrip.js";
+import { LoadingState } from "./components/LoadingState.js";
 
 type Busy = "race" | "outbox" | "reset" | "consent" | null;
 
@@ -19,6 +20,7 @@ export function App() {
   const [raceResult, setRaceResult] = useState<{ agentA: AgentAttemptOutcome; agentB: AgentAttemptOutcome } | null>(
     null
   );
+  const [outboxResult, setOutboxResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refreshState = useCallback(async (id: string) => {
@@ -41,6 +43,7 @@ export function App() {
       const { contactId: id } = await api.resetDemo();
       setContactId(id);
       setRaceResult(null);
+      setOutboxResult(null);
       await refreshState(id);
     } catch (err) {
       setError((err as Error).message);
@@ -109,7 +112,8 @@ export function App() {
     setBusy("outbox");
     setError(null);
     try {
-      await api.processOneOutboxRow();
+      const result = await api.processOneOutboxRow();
+      setOutboxResult(result.kind);
       if (contactId) await refreshState(contactId);
     } catch (err) {
       setError((err as Error).message);
@@ -123,32 +127,39 @@ export function App() {
   const promise = state?.promises.find((p) => p.status === "open");
   const ledgerEntries = state ? buildLedger(state) : [];
 
+  const isInitializing = busy === "reset" && !state;
+
   return (
     <div className="app">
-      <TopBar contactId={contactId} apiHealthy={apiHealthy} />
+      <TopBar contactId={contactId} contactName={state?.contact?.display_name ?? null} apiHealthy={apiHealthy} />
       {error && (
         <div className="banner banner--error" role="alert">
           {error}
         </div>
       )}
-      <main className="layout">
-        <div className="layout__main">
-          <OperatorControls
-            consentStatus={consent?.status}
-            raceResult={raceResult}
-            busy={busy}
-            onReset={handleReset}
-            onRace={handleRace}
-            onToggleConsent={handleToggleConsent}
-            onProcessOutbox={handleProcessOutbox}
-          />
-          <Ledger entries={ledgerEntries} />
-        </div>
-        <div className="layout__side">
-          <LeasePanel lease={lease} consent={consent} promise={promise} />
-          <EvaluationStrip evaluation={evaluation} />
-        </div>
-      </main>
+      {isInitializing ? (
+        <LoadingState />
+      ) : (
+        <main className="layout">
+          <div className="layout__main">
+            <OperatorControls
+              consentStatus={consent?.status}
+              raceResult={raceResult}
+              outboxResult={outboxResult}
+              busy={busy}
+              onReset={handleReset}
+              onRace={handleRace}
+              onToggleConsent={handleToggleConsent}
+              onProcessOutbox={handleProcessOutbox}
+            />
+            <Ledger entries={ledgerEntries} />
+          </div>
+          <div className="layout__side">
+            <LeasePanel lease={lease} consent={consent} promise={promise} />
+            <EvaluationStrip evaluation={evaluation} />
+          </div>
+        </main>
+      )}
     </div>
   );
 }

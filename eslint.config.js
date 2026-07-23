@@ -12,6 +12,7 @@ export default tseslint.config(
       "**/coverage/**",
       "demo/animation/dist/**",
       "demo/animation/node_modules/**",
+      "demo/.venv/**",
       ".claude/worktrees/**",
     ],
   },

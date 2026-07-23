@@ -4,6 +4,7 @@ import type { ContactState } from "./api.js";
 
 function emptyState(overrides: Partial<ContactState> = {}): ContactState {
   return {
+    contact: null,
     consentEvents: [],
     promises: [],
     leases: [],
