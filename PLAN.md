@@ -231,3 +231,43 @@ Demo target: race view (35s), Cockroach memory/promise recall (25s), one lease/o
 
 Risks: provider exactly-once gap → sandbox idempotency and ambiguous state; transaction contention → short transactions/recommended retries; vector staleness → authoritative joins; AWS/Cockroach demo outage → recorded real run/replay clearly labeled; scope → cut multi-channel/UI breadth before consent, transaction, outbox, qualifying features, and evaluation.
 
+## 16. Actual completion status (2026-07-23)
+
+Recorded here rather than editing the sections above, so the original spec stays intact for
+comparison against what shipped.
+
+**Implemented and verified (real, running, tested):**
+- `packages/contracts`, `packages/db` (CockroachDB schema/migrations, serializable-retry
+  helper), `packages/policy` (17 boundary tests), `packages/memory` (real distributed vector
+  index queries), `packages/bedrock` (fixture + live-adapter interface).
+- `services/api`, `services/agent-worker` (recall → plan → policy → transaction), `services/
+  outbox-worker` (crash-safe sandbox delivery) — all with integration tests against live
+  CockroachDB, including the exact race/idempotency/consent/crash-recovery scenarios M1–M2
+  describe.
+- `apps/console` — the judge-facing audit UI (M3), keyboard-operable, axe-clean at every
+  reachable state, responsive to mobile.
+- `eval/` — 1,000-race, 6-scenario fault-injection, and memory/citation evaluation harnesses,
+  all run against real CockroachDB with committed JSON reports (M3).
+- Full demo package (M4): Remotion video, real Qwen3-TTS narration, original music, captions,
+  screenshots, thumbnail — see `demo/README.md`-equivalent content in this file's Demo
+  section and `docs/BUILD_EVIDENCE.md`.
+
+**Deferred exactly as planned in §2 "Deferred":** production CRM/ESP integration, legal policy
+packs, real customers, multi-channel voice/SMS, campaign UI, billing. None of these were
+started; none are implied as done anywhere in this repository.
+
+**Run in local fixture mode, not deployed to real cloud (human-approval boundary, §"Human
+approval boundary" in AGENTS.md):**
+- CockroachDB Cloud / AWS deployment itself — this build runs against local Docker
+  CockroachDB only. No cloud account was provisioned or billed.
+- Bedrock — fixture planner active (`BEDROCK_MODE=fixture`); the real `ConverseCommand`
+  adapter is implemented and unit-tested but has never been called live (no AWS credentials
+  exist in this environment).
+- CockroachDB Managed MCP — Cloud-only feature; not activated (no Cloud cluster exists). The
+  qualifying CockroachDB feature actually demonstrated is Distributed Vector Indexing, which
+  is real, local, and running against the real `VECTOR`/`VECTOR INDEX` schema in
+  `packages/db/migrations/002_vector_index.sql`.
+
+Full production-vs-fixture matrix, and the exact one-line change needed to flip each fixture
+to live: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
+

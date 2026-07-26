@@ -84,5 +84,60 @@ Two Lambda/agent workers race on “follow up with Jordan.” Both retrieve the 
 
 ## Status
 
-The first vertical slice will seed one consent event and promise, race two workers, create one fenced outbox action in CockroachDB, draft through Bedrock, and block after revocation. [PLAN.md](PLAN.md) defines schemas, transactions, feature requirements, and tests. [AGENTS.md](AGENTS.md) defines safety and submission rules.
+**Built and verified, running locally.** The full vertical slice works end to end against a
+real CockroachDB instance: seed → race two workers → one fenced outbox action → Bedrock draft
+(fixture mode) → consent revocation cancels the pending send → a genuinely killed and
+restarted outbox-worker process resumes exactly once. [PLAN.md](PLAN.md) defines schemas,
+transactions, feature requirements, and tests (status section there records what shipped
+vs. deferred). [AGENTS.md](AGENTS.md) defines safety and submission rules — all non-negotiables
+hold in the current implementation. [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) lists exactly
+which parts run for real locally (CockroachDB, the distributed vector index, the transactional
+core, the evaluation harness, the narration/music/video pipeline) vs. which run in a disclosed
+fixture mode pending cloud credentials (Bedrock, Managed MCP) — no cloud account or spend was
+provisioned in this environment per the human entrant's explicit local-only decision.
+
+### Local setup
+
+```bash
+pnpm install
+pnpm db:up          # local CockroachDB in Docker, port 14910
+pnpm db:migrate
+pnpm --filter @contactsafe/api start        # http://127.0.0.1:14901
+pnpm --filter @contactsafe/console dev       # http://127.0.0.1:14900
+```
+
+Copy `.env.example` to `.env` and adjust if needed (defaults work for the local-only setup
+above). Port block `14900–14999` is this repository's assigned range; see the table below.
+
+| Port | Service |
+|---|---|
+| 14900 | Console (judge-facing UI) |
+| 14901 | API |
+| 14902 | Agent-worker health check |
+| 14903 | Outbox-worker health check |
+| 14910 | CockroachDB SQL |
+| 14911 | CockroachDB admin UI |
+| 14920 | E2E/Playwright test server |
+
+### Verification commands actually run
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm test:e2e
+pnpm eval:race && pnpm eval:faults && pnpm eval:memory
+```
+
+Real, measured results are committed under `eval/reports/*.json` (not asserted from memory):
+1,000 concurrent/retried authorization attempts → 1 approved action, 0 duplicates, 0 consent
+violations; 6/6 fault-injection scenarios recovered; 100% cited-fact validity, 0% unsupported
+plan claims. The console's "Evaluation" panel reads these same files live.
+
+### Demo video
+
+`demo/final/frosty-prairie-9620-demo.mp4` — Remotion composition (`demo/animation/`) built
+from real captured product footage/screenshots, real Qwen3-TTS narration
+(`mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit`, `demo/audio/narration/provenance.json`),
+original scripted music (`demo/scripts/generate_music.py`), and captions generated from real
+Whisper timestamps (`demo/captions/`). Reproducible via `python3 demo/scripts/render_with_lock.py`
+after generating narration/music once. See `demo/demo.yaml` and `demo/narration.md` for the
+scene-by-scene script.
 
