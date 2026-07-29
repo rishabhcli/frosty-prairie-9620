@@ -6,5 +6,5 @@
   "citedFactValidityRate": 1,
   "unsupportedClaimRate": 0,
   "methodologyNote": "precisionAtK/recallAtK measure retrieval quality against the currentlyValid authoritative signal, not semantic topicality -- embedText() is a deterministic fixture, not a trained embedding model. See eval/memory/run.ts header comment and docs/CURRENT_SOURCES.md.",
-  "generatedAt": "2026-07-21T18:40:08.952Z"
+  "generatedAt": "2026-07-29T02:30:06.980Z"
 }
