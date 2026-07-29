@@ -13,3 +13,5 @@ coverage/
 *.tsbuildinfo
 __pycache__/
 *.pyc
+infra/aws/dist/
+infra/aws/*.zip

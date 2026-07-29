@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:14901";
+const API_BASE = import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? "" : "http://127.0.0.1:14901");
 
 export interface ConsentEventRow {
   event_id: string;

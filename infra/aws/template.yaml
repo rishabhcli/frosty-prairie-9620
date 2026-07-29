@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ContactSafe public judge demo on AWS Lambda
+
+Parameters:
+  CodeBucket:
+    Type: String
+  CodeKey:
+    Type: String
+  DatabaseUrlSecretArn:
+    Type: String
+    NoEcho: true
+
+Resources:
+  ContactSafeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: contactsafe-lambda-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: ReadContactSafeDatabaseSecret
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: !Ref DatabaseUrlSecretArn
+
+  ContactSafeFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: contactsafe
+      Architectures:
+        - x86_64
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref CodeKey
+      Description: ContactSafe judge console and transactional authorization API
+      Environment:
+        Variables:
+          BEDROCK_MODE: fixture
+          DATABASE_URL_SECRET_ARN: !Ref DatabaseUrlSecretArn
+          MIGRATIONS_DIR: /var/task/migrations
+          REPORTS_DIR: /var/task/eval/reports
+          STATIC_DIR: /var/task/public
+      Handler: index.handler
+      MemorySize: 1024
+      ReservedConcurrentExecutions: 2
+      Role: !GetAtt ContactSafeRole.Arn
+      Runtime: nodejs22.x
+      Timeout: 30
+
+  ContactSafeLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/contactsafe
+      RetentionInDays: 14
+
+  ContactSafeUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      AuthType: NONE
+      Cors:
+        AllowHeaders:
+          - content-type
+        AllowMethods:
+          - GET
+          - POST
+        AllowOrigins:
+          - "*"
+        MaxAge: 300
+      InvokeMode: BUFFERED
+      TargetFunctionArn: !GetAtt ContactSafeFunction.Arn
+
+  ContactSafeUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunctionUrl
+      FunctionName: !Ref ContactSafeFunction
+      FunctionUrlAuthType: NONE
+      Principal: "*"
+
+  ContactSafeInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ContactSafeFunction
+      InvokedViaFunctionUrl: true
+      Principal: "*"
+
+Outputs:
+  FunctionUrl:
+    Description: Public ContactSafe judge demo
+    Value: !GetAtt ContactSafeUrl.FunctionUrl

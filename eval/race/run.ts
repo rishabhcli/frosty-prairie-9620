@@ -7,6 +7,21 @@ import { writeReport, percentile } from "../lib/report.js";
 
 const ATTEMPT_COUNT = 1000;
 
+function describeDatabaseTarget(connectionString: string | undefined): string {
+  if (!connectionString) {
+    return "the configured database target";
+  }
+
+  try {
+    const hostname = new URL(connectionString).hostname;
+    return hostname.endsWith(".cockroachlabs.cloud")
+      ? "a managed CockroachDB Cloud cluster"
+      : "a local or self-hosted CockroachDB target";
+  } catch {
+    return "the configured database target";
+  }
+}
+
 async function main() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 40 });
   await runMigrations(pool);
@@ -64,7 +79,7 @@ async function main() {
     p95AuthorizationLatencyMs: percentile(latenciesMs, 95),
     wallClockMs,
     methodologyNote:
-      "Latency is end-to-end per attempt (recall + fixture plan + authorization transaction), measured on a single local CockroachDB node with a 40-connection pool serving 1000 concurrent attempts -- it is dominated by connection-pool queuing under that contention, not transaction execution time alone. This run executed on a shared development host running several other unrelated concurrent workloads, so absolute latency varies run to run and should not be read as a production benchmark. The correctness numbers above (approvedActions, duplicateApprovedActions, dbGroundTruth) are the release-gate-relevant ones, do not depend on host load, and have been stable (1 approved action, 0 duplicates) across every run performed during development.",
+      `Latency is end-to-end per attempt (recall + fixture plan + authorization transaction), measured from a shared development host against ${describeDatabaseTarget(process.env.DATABASE_URL)} with a 40-connection pool serving 1000 concurrent attempts. It is dominated by client connection-pool queuing under that contention, not transaction execution time alone, and should not be read as a production benchmark. The correctness numbers above (approvedActions, duplicateApprovedActions, dbGroundTruth) are the release-gate-relevant ones and do not depend on absolute host or network latency.`,
     outcomeBreakdown: {
       authorized: countByKind("authorized"),
       idempotent_replay: countByKind("idempotent_replay"),

@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
+import fastifyStatic from "@fastify/static";
 import type { Pool } from "pg";
 import { reset, seed } from "@contactsafe/db";
 import { DEMO_TENANT_ID, ConsentStatus } from "@contactsafe/contracts";
@@ -12,20 +13,26 @@ import { createAgentTask, runAgentAttempt } from "@contactsafe/agent-worker";
 import { claimAndDeliverOne } from "@contactsafe/outbox-worker";
 import { getContactState } from "./state.js";
 
-const REPORTS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "eval", "reports");
+const DEFAULT_REPORTS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "eval", "reports");
 
-async function readReport(name: string): Promise<unknown | null> {
+async function readReport(reportsDir: string, name: string): Promise<unknown | null> {
   try {
-    return JSON.parse(await readFile(join(REPORTS_DIR, name), "utf8"));
+    return JSON.parse(await readFile(join(reportsDir, name), "utf8"));
   } catch {
     return null;
   }
 }
 
-export async function buildServer(pool: Pool): Promise<FastifyInstance> {
+export interface BuildServerOptions {
+  reportsDir?: string;
+  staticRoot?: string;
+}
+
+export async function buildServer(pool: Pool, options: BuildServerOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
   await app.register(cors, { origin: true });
   const planner = createOutreachPlanner();
+  const reportsDir = options.reportsDir ?? DEFAULT_REPORTS_DIR;
 
   app.get("/health", async () => ({ status: "ok" }));
 
@@ -99,9 +106,9 @@ export async function buildServer(pool: Pool): Promise<FastifyInstance> {
 
   app.get("/evaluation/latest", async (_req, reply) => {
     const [race, faults, memory] = await Promise.all([
-      readReport("race.json"),
-      readReport("faults.json"),
-      readReport("memory.json"),
+      readReport(reportsDir, "race.json"),
+      readReport(reportsDir, "faults.json"),
+      readReport(reportsDir, "memory.json"),
     ]);
     return reply.send({ race, faults, memory });
   });
@@ -111,6 +118,13 @@ export async function buildServer(pool: Pool): Promise<FastifyInstance> {
     const { jordanContactId } = await seed(pool);
     return reply.send({ contactId: jordanContactId });
   });
+
+  if (options.staticRoot) {
+    await app.register(fastifyStatic, {
+      root: options.staticRoot,
+      prefix: "/",
+    });
+  }
 
   return app;
 }

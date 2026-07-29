@@ -18,6 +18,8 @@
     "eval:faults": "tsx eval/faults/run.ts",
     "eval:memory": "tsx eval/memory/run.ts",
     "build": "pnpm -r run build",
+    "build:lambda": "pnpm build && node infra/aws/build-lambda.mjs",
+    "package:lambda": "pnpm build:lambda && rm -f infra/aws/contactsafe-lambda.zip && cd infra/aws/dist && zip -qr ../contactsafe-lambda.zip .",
     "db:up": "docker compose -f infra/docker-compose.yml up -d",
     "db:down": "docker compose -f infra/docker-compose.yml down",
     "db:migrate": "tsx packages/db/src/migrate.run.ts",
@@ -35,6 +37,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "globals": "^15.12.0",
     "@playwright/test": "^1.49.0",
-    "@axe-core/playwright": "^4.10.1"
+    "@axe-core/playwright": "^4.10.1",
+    "esbuild": "^0.28.1"
   }
 }
