@@ -8,7 +8,7 @@ export const Thumbnail: React.FC = () => {
     <AbsoluteFill style={{ backgroundColor: colors.ink }}>
       <div style={{ position: "absolute", inset: 0, opacity: 0.55 }}>
         <Img
-          src={staticFile("screenshots/02-transaction-result.png")}
+          src={staticFile("screenshots/08-live-aws.png")}
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
         />
       </div>
@@ -24,12 +24,12 @@ export const Thumbnail: React.FC = () => {
           CONTACTSAFE
         </div>
         <div style={{ fontFamily: fonts.body, fontWeight: 700, fontSize: 74, lineHeight: 1.08, color: colors.textPrimary }}>
-          1,000 agents raced.
+          1,000 attempts.
           <br />
-          <span style={{ color: colors.allow }}>One</span> was ever allowed to send.
+          <span style={{ color: colors.allow }}>One</span> safe action.
         </div>
         <div style={{ fontFamily: fonts.display, fontSize: 24, color: colors.textSecondary, marginTop: 28 }}>
-          CockroachDB-authorized agentic memory · 0 duplicates · 0 consent violations
+          CockroachDB Cloud + AWS Lambda · 0 duplicates · 0 consent violations
         </div>
       </div>
     </AbsoluteFill>

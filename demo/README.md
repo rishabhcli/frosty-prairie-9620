@@ -18,7 +18,7 @@ demo/
     mix/                  final mixed audio stem extracted from the rendered video
   capture/               raw Playwright-recorded product footage + events.json (real timestamps)
   captions/               demo.srt / demo.vtt, generated from real Whisper timestamps
-  screenshots/            7 full-resolution judge-facing screenshots
+  screenshots/            8 full-resolution judge-facing screenshots
   thumbnail/              thumbnail.png (16:9), hero.png, architecture.png, results.png
   scripts/                every script used to produce the above (see below)
   final/                  frosty-prairie-9620-demo.mp4 (git-ignored -- see below)
@@ -62,9 +62,10 @@ The hackathon's own submission rule requires the video be uploaded to YouTube or
 made public — the git repository isn't where judges watch it. Committing an 18MB+ binary that
 is fully reproducible from committed source (Remotion composition + narration/music scripts +
 one documented render command) would only bloat the repository. The verified render is
-uploaded at <https://youtu.be/vHthteCZzjk> with its custom thumbnail and timed English
-captions. It remains unlisted until the missing sponsor integrations and public deployment
-make the project eligible for a truthful final submission.
+uploaded at <https://youtu.be/iAy-5f8dMYw> with its custom thumbnail and timed English
+captions. It remains unlisted until Devpost project creation and entrant eligibility permit
+a truthful final submission; the live CockroachDB Cloud and AWS Lambda integrations are
+already deployed and documented.
 
 ## Provenance and verification
 

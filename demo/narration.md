@@ -36,11 +36,11 @@ Voice direction column notes the emotional register for that line — passed to 
 
 > One more test: kill the outbox worker mid-delivery. // On restart, it doesn't guess. // It rechecks consent, rechecks the fencing token, and finds the one pending row it already approved. // It resumes that — and only that. // No second send. No lost task.
 
-## Scene 6 — Feature proof and metrics (2:08–2:35, ~62 words)
+## Scene 6 — Feature proof and metrics (2:08–2:35, ~58 words)
 
 **Direction:** matter-of-fact, precise — this is the evidence section, let the numbers carry it.
 
-> Under the hood, CockroachDB's distributed vector index really runs for recall. // Managed MCP and AWS Bedrock are target integrations only; neither ran in this demo. // We ran one thousand concurrent, retried attempts at this exact local race. // One approved action. // Zero duplicates. // Zero consent violations. // The sponsor integration minimum remains unfinished.
+> Under the hood, CockroachDB Cloud's distributed vector index runs for recall. // The official ccloud CLI provisioned the database and SQL identity, and AWS Lambda serves this live judge console. // Bedrock remains fixture-backed because this AWS organization explicitly denies Bedrock access. // We then ran one thousand concurrent, retried attempts against the Cloud database. // One approved action. // Zero duplicates. // Zero consent violations.
 
 ## Scene 7 — Honest limitation (2:35–2:48, ~28 words)
 
@@ -65,7 +65,7 @@ Voice direction column notes the emotional register for that line — passed to 
 | 3 | 0:48–1:18 | 30s | 68 | ~136 |
 | 4 | 1:18–1:43 | 25s | 52 | ~125 |
 | 5 | 1:43–2:08 | 25s | 55 | ~132 |
-| 6 | 2:08–2:35 | 27s | 62 | ~138 |
+| 6 | 2:08–2:35 | 27s | 58 | ~129 |
 | 7 | 2:35–2:48 | 13s | 28 | ~129 |
 | 8 | 2:48–2:53 | 5s | 11 | ~132 |
 

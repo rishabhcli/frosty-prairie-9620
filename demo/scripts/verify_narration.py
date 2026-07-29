@@ -10,11 +10,21 @@ from narrate import SCENES, OUT_DIR  # noqa: E402
 
 import mlx_whisper
 
+lines = []
 for scene_id, text in SCENES:
     wav_path = OUT_DIR / f"{scene_id}.wav"
     result = mlx_whisper.transcribe(str(wav_path), path_or_hf_repo="mlx-community/whisper-small-mlx")
     transcript = result["text"].strip()
-    print(f"=== {scene_id} ===")
-    print(f"script:     {text}")
-    print(f"transcript: {transcript}")
-    print()
+    lines.extend(
+        [
+            f"=== {scene_id} ===",
+            f"script:     {text}",
+            f"transcript: {transcript}",
+            "",
+        ]
+    )
+
+verification = "\n".join(lines)
+(OUT_DIR / "stt_verification.txt").write_text(verification)
+print(verification)
+print(f"wrote {OUT_DIR / 'stt_verification.txt'}")

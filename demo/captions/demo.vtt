@@ -1,91 +1,85 @@
 WEBVTT
 
-00:00:03.000 --> 00:00:05.800
-Two agents, one customer.
+00:00:04.500 --> 00:00:08.840
+Two agents, one customer, both remember the conversation.
 
-00:00:05.800 --> 00:00:08.000
-Both remember the conversation.
-
-00:00:08.000 --> 00:00:10.200
+00:00:08.840 --> 00:00:11.140
 Neither one knows what the other's about to do.
 
-00:00:11.780 --> 00:00:17.380
-Here's Jordan. Jordan got a promise last week. I'll email the revised quote after Tuesday.
+00:00:13.640 --> 00:00:19.640
+Here's Jordan. Jordan got a promise last week I'll email the revised quote after Tuesday.
 
-00:00:17.380 --> 00:00:20.880
+00:00:19.640 --> 00:00:22.640
 Now two agents both pick up the follow-up task at the same instant.
 
-00:00:20.880 --> 00:00:24.680
-Agent A and Agent B each query cockroach DB for the same thing.
+00:00:22.640 --> 00:00:26.640
+Agent A and Agent B each query CockroachDB for the same thing.
 
-00:00:24.680 --> 00:00:28.080
+00:00:26.640 --> 00:00:30.640
 Jordan's consent, the open promise, and anything similar in vector memory.
 
-00:00:28.080 --> 00:00:31.680
+00:00:30.640 --> 00:00:35.640
 Both get the same answer back with citations. Both are about to act.
 
-00:00:31.680 --> 00:00:33.680
+00:00:35.640 --> 00:00:37.640
 That's the moment most systems get this wrong.
 
-00:00:35.120 --> 00:00:40.560
-Watch the lease. Agent B gets there first, one serializable transaction,
+00:00:39.300 --> 00:00:44.460
+Watch the lease. Agent B gets there first. One serializable transaction, one
 
-00:00:40.560 --> 00:00:46.880
-one fenced lease, one outbox row, committed. Agent A retries a beat later, sees a newer
+00:00:44.460 --> 00:00:49.220
+fenced lease, one outbox row, committed. Agent A retries a beat later, sees a
 
-00:00:46.880 --> 00:00:53.200
-fencing token, and backs off cleanly. No duplicate email. No coin flip.
+00:00:49.220 --> 00:00:53.820
+newer fencing token and backs off cleanly. No duplicate email, no coin flip.
 
-00:00:54.160 --> 00:01:00.000
-Cockroach DB didn't just store the memory, it decided, transactionally, who gets to act on it.
+00:00:53.820 --> 00:00:58.540
+Cockroach DB didn't just store the memory, it decided transactionally who gets to act on it.
 
-00:01:01.660 --> 00:01:07.900
+00:01:00.080 --> 00:01:05.740
 Now Jordan revokes email consent. The email from a moment ago is still sitting in the queue waiting to send.
 
-00:01:08.180 --> 00:01:16.420
+00:01:06.140 --> 00:01:12.660
 Doesn't matter that it was already approved. Before delivery, the worker rechecks consent one more time and this time it's revoked.
 
-00:01:16.600 --> 00:01:20.780
-The send gets cancelled, not sent, before anything goes out.
+00:01:12.660 --> 00:01:15.780
+The send gets canceled, not sent before anything goes out.
 
-00:01:22.440 --> 00:01:26.440
-One more test. Kill the outbox worker mid-delivery.
+00:01:17.740 --> 00:01:24.540
+One more test. Kill the outbox worker mid delivery. On restart it doesn't guess. It
 
-00:01:26.440 --> 00:01:29.960
-On restart, it doesn't guess. It rechecks consent,
+00:01:24.540 --> 00:01:28.820
+rechecks consent, rechecks the fencing token and finds the one pending row it
 
-00:01:29.960 --> 00:01:34.760
-rechecks the fencing token, and finds the one pending row it already approved.
+00:01:28.820 --> 00:01:34.380
+already approved. It resumes that and only that. No second send, no lost task.
 
-00:01:34.760 --> 00:01:39.240
-It resumes that and only that. No second send. No lost task.
+00:01:35.880 --> 00:01:41.160
+Under the hood, CockroachDB Cloud's distributed vector index runs for recall.
 
-00:01:40.820 --> 00:01:46.100
-Under the hood, CockroachDB's distributed vector index really runs for recall.
+00:01:41.160 --> 00:01:46.480
+The official ccloud CLI provisioned the database and SQL identity, and AWS Lambda
 
-00:01:46.100 --> 00:01:50.580
-Managed MCP and AWS Bedrock are target integrations only.
+00:01:46.480 --> 00:01:50.440
+serves this live judge console. Bedrock remains fixture-backed because this AWS
 
-00:01:50.580 --> 00:01:56.580
-Neither ran in this demo. We ran 1,000 concurrent, retried attempts at this exact local race.
+00:01:50.440 --> 00:01:54.960
+organization explicitly denies Bedrock access. We then ran 1,000 concurrent
 
-00:01:56.580 --> 00:02:00.900
-One approved action, zero duplicates, zero consent violations.
+00:01:54.960 --> 00:01:58.600
+retried attempts against the Cloud database. One approved action, zero
 
-00:02:00.900 --> 00:02:03.460
-The sponsor integration minimum remains unfinished.
+00:01:58.600 --> 00:02:00.920
+duplicates, zero consent violations.
 
-00:02:05.120 --> 00:02:09.520
+00:02:02.420 --> 00:02:06.620
 This demo sends through a sandbox provider, not a live inbox.
 
-00:02:09.520 --> 00:02:12.720
-And ContactSafe enforces the policy you configure.
+00:02:06.620 --> 00:02:11.620
+And ContactSafe enforces the policy you configure, it isn't a compliance review on its own.
 
-00:02:12.720 --> 00:02:14.920
-It isn't a compliance review on its own.
-
-00:02:16.540 --> 00:02:20.460
+00:02:13.120 --> 00:02:16.440
 Shared memory made two agents safe to run together.
 
-00:02:20.460 --> 00:02:21.900
-That's contact safe.
+00:02:16.440 --> 00:02:18.000
+That's ContactSafe.

@@ -137,9 +137,9 @@ export const ContactSafeDemo: React.FC = () => {
       <Sequence from={ARCHITECTURE.from} durationInFrames={ARCHITECTURE.durationInFrames}>
         <ArchitectureAnimation />
         <LowerThird
-          label="Sponsor boundary"
-          detail="Vector index: real locally · Managed MCP: not run · Bedrock: fixture"
-          mode="fixture"
+          label="Live sponsor stack"
+          detail="CockroachDB Cloud + vector index + ccloud CLI · AWS Lambda · Bedrock fixture"
+          mode="live"
           inAt={0}
         />
       </Sequence>

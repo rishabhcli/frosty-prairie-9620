@@ -59,11 +59,12 @@ SCENES = [
     ),
     (
         "scene-06-evaluation",
-        "Under the hood, CockroachDB's distributed vector index really runs for recall. "
-        "Managed MCP and AWS Bedrock are target integrations only; neither ran in this demo. "
-        "We ran one thousand concurrent, retried attempts at this exact local race. "
+        "Under the hood, CockroachDB Cloud's distributed vector index runs for recall. "
+        "The official ccloud CLI provisioned the database and SQL identity, and AWS Lambda "
+        "serves this live judge console. Bedrock remains fixture-backed because this AWS "
+        "organization explicitly denies Bedrock access. We then ran one thousand concurrent, "
+        "retried attempts against the Cloud database. "
         "One approved action. Zero duplicates. Zero consent violations. "
-        "The sponsor integration minimum remains unfinished.",
     ),
     (
         "scene-07-limitation",

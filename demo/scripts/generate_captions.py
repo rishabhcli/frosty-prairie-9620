@@ -16,21 +16,28 @@ import mlx_whisper
 
 TRANSITION_S = 1.5
 CAPTIONS_DIR = DEMO_DIR / "captions"
+TEXT_REPLACEMENTS = {
+    "The official cloud CLI": "The official ccloud CLI",
+    "live judge console Bedrock": "live judge console. Bedrock",
+    "fixture backed": "fixture-backed",
+    "the cloud database": "the Cloud database",
+    "contact safe": "ContactSafe",
+}
 
 
 def fmt_srt(t: float) -> str:
-    h = int(t // 3600)
-    m = int((t % 3600) // 60)
-    s = int(t % 60)
-    ms = int(round((t - int(t)) * 1000))
+    total_ms = round(t * 1000)
+    h, remainder = divmod(total_ms, 3_600_000)
+    m, remainder = divmod(remainder, 60_000)
+    s, ms = divmod(remainder, 1_000)
     return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 
 def fmt_vtt(t: float) -> str:
-    h = int(t // 3600)
-    m = int((t % 3600) // 60)
-    s = int(t % 60)
-    ms = int(round((t - int(t)) * 1000))
+    total_ms = round(t * 1000)
+    h, remainder = divmod(total_ms, 3_600_000)
+    m, remainder = divmod(remainder, 60_000)
+    s, ms = divmod(remainder, 1_000)
     return f"{h:02d}:{m:02d}:{s:02d}.{ms:03d}"
 
 
@@ -40,15 +47,14 @@ def main():
     duration_by_id = {s["sceneId"]: s["durationSeconds"] for s in provenance["scenes"]}
 
     # Mirror timeline.ts's block placement exactly.
-    cursor = 3.0  # after TITLE
+    cursor = 3.0 + TRANSITION_S  # TITLE block plus its transition
     scene_offsets = {}
     scene_order = [s[0] for s in SCENES]
-    scene6_total = duration_by_id["scene-06-evaluation"]
-    architecture_share = min(9.0, scene6_total * 0.45)
 
     for scene_id in scene_order:
         scene_offsets[scene_id] = cursor
-        cursor += duration_by_id[scene_id] + TRANSITION_S
+        scene_hold = 1.0 if scene_id == "scene-01-problem" else 0.0
+        cursor += duration_by_id[scene_id] + scene_hold + TRANSITION_S
 
     cues = []
     for scene_id, _text in SCENES:
@@ -57,12 +63,20 @@ def main():
             str(wav_path), path_or_hf_repo="mlx-community/whisper-small-mlx", word_timestamps=False
         )
         offset = scene_offsets[scene_id]
+        duration = duration_by_id[scene_id]
         for seg in result["segments"]:
+            start = min(max(float(seg["start"]), 0.0), duration)
+            end = min(max(float(seg["end"]), start), duration)
+            if end - start < 0.05:
+                continue
+            text = seg["text"].strip()
+            for source, replacement in TEXT_REPLACEMENTS.items():
+                text = text.replace(source, replacement)
             cues.append(
                 {
-                    "start": offset + seg["start"],
-                    "end": offset + seg["end"],
-                    "text": seg["text"].strip(),
+                    "start": offset + start,
+                    "end": offset + end,
+                    "text": text,
                 }
             )
 

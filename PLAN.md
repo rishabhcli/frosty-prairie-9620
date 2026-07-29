@@ -231,7 +231,7 @@ Demo target: race view (35s), Cockroach memory/promise recall (25s), one lease/o
 
 Risks: provider exactly-once gap → sandbox idempotency and ambiguous state; transaction contention → short transactions/recommended retries; vector staleness → authoritative joins; AWS/Cockroach demo outage → recorded real run/replay clearly labeled; scope → cut multi-channel/UI breadth before consent, transaction, outbox, qualifying features, and evaluation.
 
-## 16. Actual completion status (2026-07-23)
+## 16. Actual completion status (updated 2026-07-29)
 
 Recorded here rather than editing the sections above, so the original spec stays intact for
 comparison against what shipped.
@@ -247,27 +247,31 @@ comparison against what shipped.
 - `apps/console` — the judge-facing audit UI (M3), keyboard-operable, axe-clean at every
   reachable state, responsive to mobile.
 - `eval/` — 1,000-race, 6-scenario fault-injection, and memory/citation evaluation harnesses,
-  all run against real CockroachDB with committed JSON reports (M3).
+  all run against real CockroachDB with committed JSON reports (M3). The latest release-gate
+  run used the managed CockroachDB Cloud cluster.
+- CockroachDB Cloud Basic cluster `contactsafe`, provisioned and verified with the official
+  `ccloud` CLI v0.8.23. Distributed Vector Indexing and `ccloud` are the two qualifying
+  CockroachDB tools demonstrated by this release.
+- AWS Lambda public judge console/API, AWS Secrets Manager database configuration, S3
+  commit-addressed bundles, and CloudFormation deployment under `infra/aws/` (M4). The live
+  Function URL is recorded in `README.md`.
 - Full demo package (M4): Remotion video, real Qwen3-TTS narration, original music, captions,
-  screenshots, thumbnail — see `demo/README.md`-equivalent content in this file's Demo
-  section and `docs/BUILD_EVIDENCE.md`.
+  screenshots, thumbnail — see `demo/README.md` and `docs/BUILD_EVIDENCE.md`.
 
 **Deferred exactly as planned in §2 "Deferred":** production CRM/ESP integration, legal policy
 packs, real customers, multi-channel voice/SMS, campaign UI, billing. None of these were
 started; none are implied as done anywhere in this repository.
 
-**Run in local fixture mode, not deployed to real cloud (human-approval boundary, §"Human
-approval boundary" in AGENTS.md):**
-- CockroachDB Cloud / AWS deployment itself — this build runs against local Docker
-  CockroachDB only. No cloud account was provisioned or billed.
-- Bedrock — fixture planner active (`BEDROCK_MODE=fixture`); the real `ConverseCommand`
-  adapter is implemented and unit-tested but has never been called live (no AWS credentials
-  exist in this environment).
-- CockroachDB Managed MCP — Cloud-only feature; not activated (no Cloud cluster exists). The
-  qualifying CockroachDB feature actually demonstrated is Distributed Vector Indexing, which
-  is real, local, and running against the real `VECTOR`/`VECTOR INDEX` schema in
-  `packages/db/migrations/002_vector_index.sql`.
+**Cloud/live boundary:**
+- CockroachDB Cloud, Distributed Vector Indexing, the `ccloud` CLI, AWS Lambda, Secrets
+  Manager, S3, and CloudFormation are live and were exercised on 2026-07-29.
+- Bedrock remains fixture-backed (`BEDROCK_MODE=fixture`). The real `ConverseCommand` adapter
+  is implemented and unit-tested, but `bedrock:ListFoundationModels` is explicitly denied by
+  this AWS organization's service control policy even for the account root. No live Bedrock
+  output is claimed or counted.
+- CockroachDB Managed MCP is not used or claimed. It is unnecessary for the event minimum
+  because the working release demonstrates both Distributed Vector Indexing and the official
+  `ccloud` CLI.
 
 Full production-vs-fixture matrix, and the exact one-line change needed to flip each fixture
 to live: [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
-
