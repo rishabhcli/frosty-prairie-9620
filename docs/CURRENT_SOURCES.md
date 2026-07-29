@@ -24,4 +24,11 @@ assumptions, the decision column states what this build actually does and why.
   is treated as a hard evidence boundary, not hidden behind the working Lambda integration.
 - Managed MCP remains unused; Distributed Vector Indexing plus the official `ccloud` CLI
   satisfy the event's two-tool CockroachDB requirement.
+- The authenticated Devpost Preferences & Eligibility page was read back on 2026-07-29. It
+  records a United States location, college-student status, and a birth month/year that makes
+  the entrant 18 on the access date. Those current account facts satisfy this event's
+  age-of-majority and non-excluded-location requirements without inventing identity data.
+- Devpost project creation remains blocked by simultaneous image reCAPTCHA challenges. The
+  event manager at `keshya@devpost.com` was emailed on 2026-07-29 with the account, event,
+  affected page, and exact failure; the sent copy was verified in the configured mailbox.
 - This file will be updated if any source is re-checked closer to the submission deadline.

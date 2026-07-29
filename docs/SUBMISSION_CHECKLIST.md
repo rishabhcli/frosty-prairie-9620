@@ -45,9 +45,13 @@ items are technical or account-state blockers, not approval blockers.
 - [ ] **Change the verified unlisted video to public immediately before final submission.**
       The event requires a public YouTube/Vimeo video.
 - [x] **Re-check the live hackathon rules page** on 2026-07-29.
-- [ ] **Confirm entrant/team eligibility facts** with Devpost directly — this build never
-      alters or asserts eligibility information.
-- [ ] **Submit** via the Devpost form.
+- [x] **Confirm entrant eligibility facts** through the authenticated Devpost Preferences &
+      Eligibility page: current United States location, college-student status, and an age of
+      18 on 2026-07-29 satisfy the event's displayed requirements.
+- [ ] **Create the Devpost project** — the normal event and portfolio creation paths both
+      present simultaneous image reCAPTCHA challenges. No challenge was bypassed. A verified
+      support request was sent to the event manager on 2026-07-29.
+- [ ] **Submit** via the Devpost form after the protected creation gate is restored.
 
 ## Explicitly not done
 
