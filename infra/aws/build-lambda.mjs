@@ -24,4 +24,5 @@ await build({
 
 await cp(resolve(root, "apps/console/dist"), resolve(output, "public"), { recursive: true });
 await cp(resolve(root, "eval/reports"), resolve(output, "eval/reports"), { recursive: true });
+await cp(resolve(root, "fixtures"), resolve(output, "fixtures"), { recursive: true });
 await cp(resolve(root, "packages/db/migrations"), resolve(output, "migrations"), { recursive: true });

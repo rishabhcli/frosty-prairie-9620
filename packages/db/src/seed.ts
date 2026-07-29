@@ -5,11 +5,8 @@ import { fileURLToPath } from "node:url";
 import { DEMO_TENANT_ID } from "@contactsafe/contracts";
 
 const fixturesPath = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "..",
-  "..",
-  "fixtures",
+  process.env.FIXTURES_DIR ??
+    join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "fixtures"),
   "contacts.json"
 );
 
