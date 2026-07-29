@@ -55,7 +55,6 @@ Resources:
           STATIC_DIR: /var/task/public
       Handler: index.handler
       MemorySize: 1024
-      ReservedConcurrentExecutions: 2
       Role: !GetAtt ContactSafeRole.Arn
       Runtime: nodejs22.x
       Timeout: 30
