@@ -6,7 +6,12 @@ In the demo, two agents race to follow up with the same customer. Both can plan,
 
 ## Hackathon target
 
-ContactSafe is tailored to the **CockroachDB × AWS Agentic Memory Hackathon**: <https://cockroachdb-ai.devpost.com/>. CockroachDB is the persistent coordination and memory substrate, and AWS runs the agent workflow. The build intentionally demonstrates the distributed vector index plus CockroachDB Managed MCP (or a current permitted third feature such as Agent Skills/ccloud capability) so it satisfies the requirement to use at least two named CockroachDB agent features, not merely a SQL database.
+ContactSafe targets the **CockroachDB × AWS Agentic Memory Hackathon**:
+<https://cockroachdb-ai.devpost.com/>. The current local release genuinely demonstrates
+CockroachDB as the persistent coordination and memory substrate, including its distributed
+vector index. It does **not** yet satisfy the event's sponsor-integration minimum: Managed MCP
+has not been run, no second qualifying CockroachDB agent tool has been demonstrated, and the
+AWS/Bedrock path remains fixture-backed until credentials and a deployment exist.
 
 ## Problem
 
@@ -22,9 +27,12 @@ ContactSafe treats memory as several different things:
 
 ## Core workflow
 
-1. A new outreach task arrives through an API or AWS event.
+1. A new outreach task arrives through the local API; the production design can replace this
+   with an AWS event.
 2. The worker queries CockroachDB for current consent, frequency history, active promises, previous attempts, and semantically similar memories.
-3. Amazon Bedrock produces a structured plan and draft using only retrieved/cited facts.
+3. The configured planner produces a structured draft using only retrieved/cited facts. The
+   release demo uses `FixtureOutreachPlanner`; the Bedrock Converse adapter is implemented and
+   tested but has not been called with AWS credentials.
 4. A deterministic policy engine evaluates channel consent, quiet hours, contact cap, promise timing, campaign suppression, and required fields.
 5. In one CockroachDB serializable transaction, the worker re-reads authoritative state, acquires/renews a lease, records the decision, and inserts an idempotent transactional-outbox row.
 6. A separate sender processes the outbox and records provider response. Retries use the same idempotency key.
@@ -45,15 +53,17 @@ Core tables:
 
 Serializable transactions and retry loops provide correctness under races. Lease fencing tokens prevent a stale worker from committing after a newer owner takes over. Unique indexes prevent duplicate approved actions even when requests are delivered repeatedly.
 
-## AWS and agent architecture
+## Target AWS and agent architecture
 
-- API Gateway or a small web API receives tasks and consent changes.
-- AWS Lambda workers perform recall, Bedrock structured planning/summarization, policy evaluation, and transactional authorization.
-- SQS/EventBridge drives retries and outbox delivery with dead-letter handling.
-- Bedrock model access stays server-side and returns schema-constrained JSON.
-- CockroachDB Managed MCP provides judge-visible exploration/agent access to memory in an allowlisted, read-focused workflow.
+- API Gateway or a small web API can receive tasks and consent changes.
+- AWS Lambda workers can run recall, Bedrock structured planning/summarization, policy
+  evaluation, and transactional authorization.
+- SQS/EventBridge can drive retries and outbox delivery with dead-letter handling.
+- The implemented Bedrock adapter keeps model access server-side and validates
+  schema-constrained JSON; it is inactive in this release.
+- CockroachDB Managed MCP is a planned Cloud integration and has not been run in this release.
 - CockroachDB's distributed vector index retrieves relevant promise and interaction memories, with authoritative fact joins and citations.
-- A reusable Agent Skill describes the safe contact workflow if selected as the second/third qualifying feature.
+- A qualifying second CockroachDB tool still needs to be implemented and demonstrated.
 
 ## Evaluation
 
@@ -72,7 +82,12 @@ Metrics include duplicate approved actions/sends, consent-violation count, promi
 
 ## Demo
 
-Two Lambda/agent workers race on “follow up with Jordan.” Both retrieve the same promise, but CockroachDB grants a fenced lease and outbox action to only one; the other shows a safe conflict result. The message cites the promised Tuesday timing. Then the user revokes email consent, and a queued/retried attempt is blocked despite an older vector memory suggesting follow-up. Finally a worker is stopped between authorization and delivery; the outbox resumes once without a second approved action.
+Two local agent workers race on “follow up with Jordan.” Both retrieve the same promise, but
+CockroachDB grants a fenced lease and outbox action to only one; the other shows a safe
+conflict result. The message cites the promised Tuesday timing. Then the user revokes email
+consent, and a queued/retried attempt is blocked despite an older vector memory suggesting
+follow-up. Finally a worker is stopped between authorization and delivery; the outbox resumes
+once without a second approved action.
 
 ## Honest limits
 
@@ -92,9 +107,9 @@ transactions, feature requirements, and tests (status section there records what
 vs. deferred). [AGENTS.md](AGENTS.md) defines safety and submission rules — all non-negotiables
 hold in the current implementation. [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) lists exactly
 which parts run for real locally (CockroachDB, the distributed vector index, the transactional
-core, the evaluation harness, the narration/music/video pipeline) vs. which run in a disclosed
-fixture mode pending cloud credentials (Bedrock, Managed MCP) — no cloud account or spend was
-provisioned in this environment per the human entrant's explicit local-only decision.
+core, the evaluation harness, the narration/music/video pipeline) vs. which are inactive or
+fixture-backed (Bedrock and Managed MCP). No AWS deployment or CockroachDB Cloud cluster is
+configured in this environment, so this release is not yet eligible for final submission.
 
 ### Local setup
 
@@ -141,3 +156,8 @@ Whisper timestamps (`demo/captions/`). Reproducible via `python3 demo/scripts/re
 after generating narration/music once. See `demo/demo.yaml` and `demo/narration.md` for the
 scene-by-scene script.
 
+Verified unlisted upload: <https://youtu.be/vHthteCZzjk>. It is 2:30, has the committed custom
+thumbnail and timed English (United States) captions, completed HD processing, and passed
+YouTube's initial copyright and Community Guidelines checks. Its description explicitly
+records the fixture/cloud boundary. The video remains unlisted because the event requires a
+public video only for an otherwise eligible final submission.

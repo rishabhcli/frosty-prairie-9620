@@ -40,7 +40,7 @@ Voice direction column notes the emotional register for that line — passed to 
 
 **Direction:** matter-of-fact, precise — this is the evidence section, let the numbers carry it.
 
-> Under the hood: CockroachDB's distributed vector index for recall, plus Managed MCP for judge-visible, read-only access to the same memory. // Bedrock plans and drafts from cited facts only — it never authorizes anything. // We ran one thousand concurrent, retried attempts at this exact race. // One approved action. // Zero duplicates. // Zero consent violations.
+> Under the hood, CockroachDB's distributed vector index really runs for recall. // Managed MCP and AWS Bedrock are target integrations only; neither ran in this demo. // We ran one thousand concurrent, retried attempts at this exact local race. // One approved action. // Zero duplicates. // Zero consent violations. // The sponsor integration minimum remains unfinished.
 
 ## Scene 7 — Honest limitation (2:35–2:48, ~28 words)
 

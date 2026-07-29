@@ -79,37 +79,41 @@ rechecks the fencing token, and finds the one pending row it already approved.
 It resumes that and only that. No second send. No lost task.
 
 21
-00:01:40,820 --> 00:01:49,300
-Under the hood, Cockroach DB's distributed vector index for recall plus managed MCP for judge visible read only access to the same memory.
+00:01:40,820 --> 00:01:46,100
+Under the hood, CockroachDB's distributed vector index really runs for recall.
 
 22
-00:01:49,300 --> 00:01:53,700
-Bedrock plans and drafts from cited facts only. It never authorizes anything.
+00:01:46,100 --> 00:01:50,580
+Managed MCP and AWS Bedrock are target integrations only.
 
 23
-00:01:53,700 --> 00:01:57,540
-We ran 1,000 concurrent retried attempts at this exact race.
+00:01:50,580 --> 00:01:56,580
+Neither ran in this demo. We ran 1,000 concurrent, retried attempts at this exact local race.
 
 24
-00:01:57,540 --> 00:02:01,300
-One approved action. Zero duplicates. Zero consent violations.
+00:01:56,580 --> 00:02:00,900
+One approved action, zero duplicates, zero consent violations.
 
 25
-00:02:02,880 --> 00:02:07,280
-This demo sends through a sandbox provider, not a live inbox.
+00:02:00,900 --> 00:02:03,460
+The sponsor integration minimum remains unfinished.
 
 26
-00:02:07,280 --> 00:02:10,480
-And ContactSafe enforces the policy you configure.
+00:02:05,120 --> 00:02:09,520
+This demo sends through a sandbox provider, not a live inbox.
 
 27
-00:02:10,480 --> 00:02:12,680
-It isn't a compliance review on its own.
+00:02:09,520 --> 00:02:12,720
+And ContactSafe enforces the policy you configure.
 
 28
-00:02:14,300 --> 00:02:18,220
-Shared memory made two agents safe to run together.
+00:02:12,720 --> 00:02:14,920
+It isn't a compliance review on its own.
 
 29
-00:02:18,220 --> 00:02:19,660
+00:02:16,540 --> 00:02:20,460
+Shared memory made two agents safe to run together.
+
+30
+00:02:20,460 --> 00:02:21,900
 That's contact safe.

@@ -61,9 +61,10 @@ install mlx-audio mlx-whisper soundfile numpy`.
 The hackathon's own submission rule requires the video be uploaded to YouTube or Vimeo and
 made public — the git repository isn't where judges watch it. Committing an 18MB+ binary that
 is fully reproducible from committed source (Remotion composition + narration/music scripts +
-one documented render command) would only bloat the repository. The file exists on disk after
-running the steps above; uploading it to YouTube/Vimeo is a human step (see
-`docs/SUBMISSION_CHECKLIST.md`), not something this build performs autonomously.
+one documented render command) would only bloat the repository. The verified render is
+uploaded at <https://youtu.be/vHthteCZzjk> with its custom thumbnail and timed English
+captions. It remains unlisted until the missing sponsor integrations and public deployment
+make the project eligible for a truthful final submission.
 
 ## Provenance and verification
 

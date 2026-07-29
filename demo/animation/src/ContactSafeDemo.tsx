@@ -136,6 +136,12 @@ export const ContactSafeDemo: React.FC = () => {
       </Sequence>
       <Sequence from={ARCHITECTURE.from} durationInFrames={ARCHITECTURE.durationInFrames}>
         <ArchitectureAnimation />
+        <LowerThird
+          label="Sponsor boundary"
+          detail="Vector index: real locally · Managed MCP: not run · Bedrock: fixture"
+          mode="fixture"
+          inAt={0}
+        />
       </Sequence>
       <Sequence from={RESULTS_REVEAL.from} durationInFrames={RESULTS_REVEAL.durationInFrames}>
         <ResultsReveal />

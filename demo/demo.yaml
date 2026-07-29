@@ -126,14 +126,14 @@ scenes:
     seed: "pnpm eval:race / eval:faults / eval:memory results loaded from eval/reports"
     capture_source: "playwright-recording:console@127.0.0.1:14900"
     narration_text: >
-      Under the hood: CockroachDB's distributed vector index for recall,
-      plus Managed MCP for judge-visible, read-only access to the same
-      memory. Bedrock plans and drafts from cited facts only — it never
-      authorizes anything. We ran one thousand concurrent, retried attempts
-      at this exact race. One approved action. Zero duplicates. Zero
-      consent violations.
+      Under the hood, CockroachDB's distributed vector index really runs
+      for recall. Managed MCP and AWS Bedrock are target integrations only;
+      neither ran in this demo. We ran one thousand concurrent, retried
+      attempts at this exact local race. One approved action. Zero
+      duplicates. Zero consent violations. The sponsor integration minimum
+      remains unfinished.
     on_screen_text:
-      - "Vector Index + Managed MCP (2 qualifying CockroachDB features) + AWS Bedrock"
+      - "Vector index: real locally · Managed MCP: not run · Bedrock: fixture"
       - "1,000 races -> 1 approved action, 0 duplicates, 0 consent violations"
     animation_cue: "10-second architecture animation: request -> recall (vector index) -> Bedrock plan -> policy -> serializable transaction -> outbox, each node lighting up in sequence; then metrics count up from 0 to measured values"
     cursor_or_camera_action: "cursor scrolls the evaluation report, pauses on the architecture diagram and the metrics table"

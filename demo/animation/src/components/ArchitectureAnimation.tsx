@@ -26,7 +26,7 @@ const NODES: Node[] = [
   { id: "api", x: 60, y: 430, w: 260, h: 90, label: "API", sub: "services/api", accent: colors.textSecondary, inAt: 6 },
   { id: "agent", x: 400, y: 260, w: 300, h: 100, label: "Agent Worker", sub: "recall -> plan -> policy -> tx", accent: colors.fencing, inAt: 12 },
   { id: "crdb", x: 820, y: 240, w: 340, h: 140, label: "CockroachDB", sub: "consent · promises · leases · vector", accent: colors.allow, inAt: 18 },
-  { id: "bedrock", x: 400, y: 60, w: 300, h: 80, label: "Bedrock", sub: "plan/draft only -- no send authority", accent: colors.review, inAt: 26 },
+  { id: "bedrock", x: 400, y: 60, w: 300, h: 80, label: "Fixture Planner", sub: "Bedrock adapter inactive", accent: colors.review, inAt: 26 },
   { id: "outbox", x: 400, y: 460, w: 300, h: 100, label: "Outbox Worker", sub: "sandbox send, idempotent", accent: colors.fencing, inAt: 34 },
   { id: "sandbox", x: 820, y: 480, w: 300, h: 80, label: "Sandbox Provider", sub: "no real recipients", accent: colors.block, inAt: 42 },
 ];
