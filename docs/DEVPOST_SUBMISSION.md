@@ -1,8 +1,7 @@
 # ContactSafe Devpost submission
 
-This is the source of truth for the CockroachDB x AWS Hackathon entry. Keep the video
-unlisted while the draft is being assembled, then make it public immediately before the
-final Devpost submission.
+This is the source of truth for the submitted CockroachDB x AWS Hackathon entry. The video
+was uploaded unlisted first and made public immediately before the final submission.
 
 ## Project overview
 
@@ -16,6 +15,8 @@ one fenced action even when workers race or retry.
 **Source:** <https://github.com/rishabhcli/frosty-prairie-9620>
 
 **Video:** <https://youtu.be/iAy-5f8dMYw>
+
+**Devpost:** <https://devpost.com/software/frosty-prairie-9620>
 
 **Built with:** CockroachDB Cloud, CockroachDB Distributed Vector Indexing, ccloud CLI,
 AWS Lambda, AWS Secrets Manager, Amazon S3, AWS CloudFormation, TypeScript, Node.js,

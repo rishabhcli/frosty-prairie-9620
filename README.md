@@ -195,9 +195,9 @@ Whisper timestamps (`demo/captions/`). Reproducible via `python3 demo/scripts/re
 after generating narration/music once. See `demo/demo.yaml` and `demo/narration.md` for the
 scene-by-scene script.
 
-Verified unlisted upload: <https://youtu.be/iAy-5f8dMYw>. YouTube lists the 143.600-second
-render as 2:24. It has the committed custom thumbnail and timed English (United States)
-captions, and it passed YouTube's initial copyright and Community Guidelines checks. Its
-description names the live CockroachDB Cloud and AWS Lambda paths while preserving the
-fixture-backed Bedrock boundary. The video remains unlisted until an otherwise eligible
-Devpost entry can be completed; the event requires a public video for final submission.
+Verified public upload: <https://youtu.be/iAy-5f8dMYw>. YouTube lists the 143.600-second
+render as 2:24. It was uploaded unlisted first, has the committed custom thumbnail and timed
+English (United States) captions, and passed YouTube's initial copyright and Community
+Guidelines checks. Its description names the live CockroachDB Cloud and AWS Lambda paths
+while preserving the fixture-backed Bedrock boundary. The completed Devpost entry is
+<https://devpost.com/software/frosty-prairie-9620>.

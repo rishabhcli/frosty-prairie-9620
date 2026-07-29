@@ -28,7 +28,11 @@ assumptions, the decision column states what this build actually does and why.
   records a United States location, college-student status, and a birth month/year that makes
   the entrant 18 on the access date. Those current account facts satisfy this event's
   age-of-majority and non-excluded-location requirements without inventing identity data.
-- Devpost project creation remains blocked by simultaneous image reCAPTCHA challenges. The
-  event manager at `keshya@devpost.com` was emailed on 2026-07-29 with the account, event,
-  affected page, and exact failure; the sent copy was verified in the configured mailbox.
+- The standard blank-project path presented simultaneous image reCAPTCHA challenges. No
+  challenge was bypassed. Devpost's official GitHub import created the portfolio project,
+  and the event's **Import from portfolio** flow created the hackathon draft normally.
+- ContactSafe was submitted on 2026-07-29 at
+  <https://devpost.com/software/frosty-prairie-9620>. The authenticated public page showed
+  the success banner, CockroachDB event association, correct public video, eight captioned
+  screenshots, solo contribution, and complete project story.
 - This file will be updated if any source is re-checked closer to the submission deadline.

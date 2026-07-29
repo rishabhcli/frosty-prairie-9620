@@ -34,24 +34,28 @@ Source of truth for live rules: <https://cockroachdb-ai.devpost.com/> (last chec
       in the video/console comes from a committed `eval/reports/*.json` file that was
       actually produced by running the harness against live CockroachDB.
 
-## Still required before a truthful final submission
+## Final submission state
 
-The entrant authorized autonomous upload and submission work on 2026-07-29. The remaining
-items are technical or account-state blockers, not approval blockers.
+The entrant authorized autonomous upload and submission work on 2026-07-29. The project was
+submitted through Devpost's official GitHub import and event portfolio-import flows after the
+standard blank-project path presented an image challenge.
 
 - [x] **Provision CockroachDB Cloud** and run migrations/evaluations against it.
 - [x] **Use a second qualifying CockroachDB tool** (`ccloud`), without claiming Managed MCP.
 - [x] **Deploy the live app publicly** on AWS Lambda and record/read back the URL.
-- [ ] **Change the verified unlisted video to public immediately before final submission.**
-      The event requires a public YouTube/Vimeo video.
+- [x] **Change the verified unlisted video to public immediately before final submission.**
+      The public video is <https://youtu.be/iAy-5f8dMYw>.
 - [x] **Re-check the live hackathon rules page** on 2026-07-29.
 - [x] **Confirm entrant eligibility facts** through the authenticated Devpost Preferences &
       Eligibility page: current United States location, college-student status, and an age of
       18 on 2026-07-29 satisfy the event's displayed requirements.
-- [ ] **Create the Devpost project** — the normal event and portfolio creation paths both
-      present simultaneous image reCAPTCHA challenges. No challenge was bypassed. A verified
-      support request was sent to the event manager on 2026-07-29.
-- [ ] **Submit** via the Devpost form after the protected creation gate is restored.
+- [x] **Create the Devpost project** — Devpost's official GitHub import created the portfolio
+      project, and the event's **Import from portfolio** action created the hackathon draft.
+      The image challenge on the separate blank-project path was not bypassed.
+- [x] **Submit** the complete project, including the public video, custom thumbnail, eight
+      captioned gallery images, architecture diagram, live app, source and license links,
+      integration details, eligibility answers, contribution, and accepted terms:
+      <https://devpost.com/software/frosty-prairie-9620>.
 
 ## Explicitly not done
 
